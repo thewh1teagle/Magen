@@ -3,10 +3,30 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:rxdart/rxdart.dart';
+import "package:app/utils/geo.dart" as geo;
+import 'dart:convert';
+import 'package:app/models/polygon.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  var polygons_str = await rootBundle.loadString('assets/polygons.json');
+  var data = jsonDecode(polygons_str);
+
+// Define the point you want to check
+  LatLng pointToCheck = LatLng(0.5, 0.5);
+
+  String foundKey = "";
+  data.forEach((key, dynamic_polygon) {
+    var polygon = Polygon.fromDynamic(dynamic_polygon);
+    if (geo.point_in_polygon(31.848, 34.9213, polygon.data)) {
+      print('Point is in polygon with key: $key');
+    }
+  });
+  print("done");
+
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
