@@ -53,6 +53,6 @@ export interface Cities {
 
 export interface User {
   id: string;
-  positions: LatLng[];
+  cities: string[]; // cities ids
   fcm_token: string;
 }

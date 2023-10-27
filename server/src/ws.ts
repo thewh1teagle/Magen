@@ -29,5 +29,6 @@ export function startListen(app: FastifyInstance) {
     const alerts = parseAlerts(update)
     const users = await findUsers(app, alerts)
     console.log('users => ', users)
+    // sendPush({token: 'eqchRf9ORVi1UCfL8I5xH7:APA91bEZJiTx7uRHadUCy1QIUnZMUp0K3WXVHNHQvtNzOka57ootig3jJczwnA4klnURTzDPPvyOZeeinKPke8K7huqqoTWW1U4wtEuUZTCEGQHyPuqXjZi45T3QyFTqSHKYWWr182a3', data: {hello: 'world'}})
   })
 }

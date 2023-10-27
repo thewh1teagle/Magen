@@ -5,16 +5,13 @@ export default async function routes (app: FastifyInstance, options: object) {
     const collection = app!.mongo!.db!.collection('users')
 
     interface RegisterBody {
-        positions: LatLng[]
+        cities: string[]
         fcm_token: string
     }
 
     app.post<{Body: RegisterBody}>('/create', async (req, res) => {
         return await collection.insertOne({
-            positions: req.body.positions.map(p => ({
-                type: 'Point',
-                coordinates: [p[0], p[1]]
-            })),
+            cities: req.body.cities,
             fcm_token: req.body.fcm_token
         })
     })
@@ -27,10 +24,7 @@ export default async function routes (app: FastifyInstance, options: object) {
         return await collection.updateOne(
             {_id: id}, 
             {"$set": {
-                positions: req.body.positions.map(p => ({
-                    type: 'Point',
-                    coordinates: [p[0], p[1]]
-                })),
+                cities: req.body.cities,
                 fcm_token: req.body.fcm_token
             }}
         )
