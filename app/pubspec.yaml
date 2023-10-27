@@ -40,6 +40,8 @@ dependencies:
   rxdart: ^0.27.7
   maps_toolkit: ^3.0.0
   http: ^1.1.0
+  awesome_notifications: any
+  awesome_notifications_core: ^0.8.1
 
 dev_dependencies:
   flutter_test:

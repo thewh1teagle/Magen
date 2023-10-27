@@ -1,32 +1,58 @@
 import 'package:app/firebase_options.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:rxdart/rxdart.dart';
-import "package:app/utils/geo.dart" as geo;
-import 'dart:convert';
-import 'package:app/models/polygon.dart';
+
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("received: ${message.data}");
+
+
+  AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 10,
+        channelKey: 'basic_channel',
+        actionType: ActionType.Default,
+        category: NotificationCategory.Event,
+        fullScreenIntent: false,
+        autoDismissible: true,
+        wakeUpScreen: true,
+        title: 'Hello World!',
+        body: 'This is my first notification!',
+        criticalAlert: true,
+        displayOnBackground: true,
+        displayOnForeground: true,
+        summary: "hello"
+  ));
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  var polygons_str = await rootBundle.loadString('assets/polygons.json');
-  var data = jsonDecode(polygons_str);
-
-// Define the point you want to check
-  LatLng pointToCheck = LatLng(0.5, 0.5);
-
-  String foundKey = "";
-  data.forEach((key, dynamic_polygon) {
-    var polygon = Polygon.fromDynamic(dynamic_polygon);
-    if (geo.point_in_polygon(31.848, 34.9213, polygon.data)) {
-      print('Point is in polygon with key: $key');
+  
+  AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+    if (!isAllowed) {
+      // This is just a basic example. For real apps, you must show some
+      // friendly dialog box before call the request method.
+      // This is very important to not harm the user experience
+      AwesomeNotifications().requestPermissionToSendNotifications();
     }
   });
-  print("done");
 
+
+    AwesomeNotifications().initialize(
+      // set the icon to null if you want to use the default app icon
+      null,
+      [
+        NotificationChannel(
+          importance: NotificationImportance.Max,
+            channelKey: 'basic_channel',
+            channelName: 'Basic notifications',
+            channelDescription: 'Notification channel for basic tests',
+            defaultColor: Color(0xFF9D50DD),
+            ledColor: Colors.white)
+      ],
+      debug: true);
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -35,29 +61,25 @@ void main() async {
     print("error $e");
   }
 
-  var token = await FirebaseMessaging.instance.getToken();
-  if (token != null) {
-    print(token);
-  } else {
-    print("token is null");
-  }
+  // var token = await FirebaseMessaging.instance.getToken();
+  // if (token != null) {
+  //   print(token);
+  // } else {
+  //   print("token is null");
+  // }
 
   final messaging = FirebaseMessaging.instance;
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   final settings = await messaging.requestPermission(
     alert: true,
-    announcement: false,
+    announcement: true,
     badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
+    carPlay: true,
+    criticalAlert: true,
+    provisional: true,
     sound: true,
   );
-
-  if (kDebugMode) {
-    print('Permission granted: ${settings.authorizationStatus}');
-  }
-  final _messageStreamController = BehaviorSubject<RemoteMessage>();
   runApp(const MyApp());
 }
 
@@ -104,6 +126,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  String token = "init";
   BehaviorSubject<RemoteMessage>? _messageStreamController;
 
   void _incrementCounter() {
@@ -112,57 +135,55 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void getToken() async {
+    var newToken = await FirebaseMessaging.instance.getToken();
+    setState(() {
+      token = newToken ?? "is null";
+    });
+  }
+
   @override
   void initState() {
-    _messageStreamController = BehaviorSubject<RemoteMessage>();
-    _messageStreamController?.listen((value) {
-      print("new message");
-      print(value);
-    });
-    FirebaseMessaging.onMessage.listen((event) {
-      print(event.data);
-    });
-    FirebaseMessaging.onBackgroundMessage((message) async {
-      print(message.data);
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      print(event.data);
-    });
+    getToken();
+    // _messageStreamController = BehaviorSubject<RemoteMessage>();
+    // _messageStreamController?.listen((value) {
+    //   print("new message");
+    //   print(value);
+    // });
+    // FirebaseMessaging.onMessage.listen((event) {
+    //   // print(event.data);
+    // });
+    // FirebaseMessaging.onBackgroundMessage((message) async {
+    //   print(message.data);
+    // });
+    // FirebaseMessaging.onMessageOpenedApp.listen((event) {
+    //   // print(event.data);
+    // });
     // TODO: implement initState
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+        appBar: AppBar(
+          // TRY THIS: Try changing the color here to a specific color (to
+          // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+          // change color while the other colors stay the same.
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
+        body: Column(
+          children: [
+            ElevatedButton(onPressed: () {}, child: Text(token)),
+            SelectableText(
+              token,
+              style: TextStyle(color: Colors.black),
+            )
+          ],
+        ));
   }
 }
