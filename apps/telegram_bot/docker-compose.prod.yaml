@@ -1,6 +1,6 @@
 services:
   bot:
-    image: thewh1teagle/magen_telegram_bot:latest
+    image: thewh1teagle/magen_bot:latest
     env_file:
       - .env
     

@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
-import { areasJson, citiesJson, threatsJson } from "../../../packages/magen_common_ts/src/lib";
-import { ActiveAlert, Area, City, OrefUpdate } from "../../../packages/magen_common_ts/src/interfaces";
+import { areasJson, citiesJson, threatsJson } from "../../packages/magen_common_ts/src/lib";
+import { ActiveAlert, Area, City, OrefUpdate } from "../../packages/magen_common_ts/src/interfaces";
 
 
 export function getActiveAlerts(update: OrefUpdate): ActiveAlert[] {

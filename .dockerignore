@@ -1,3 +1,7 @@
-build/
-node_modules/
-target/
+node_modules
+build
+.env
+target
+apps/mobile
+apps/web
+ws_srv/
