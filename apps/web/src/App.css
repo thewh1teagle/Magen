@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  direction: rtl;
+}
+
+.dir-ltr {
+  direction: ltr;
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}
+
+.scrollbar::-webkit-scrollbar {
+  padding-top: 30px;
+  height: 15%;
+  width: 13px;
+  background-color: transparent;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  height: 15%;
+  width: 13px;
+  border-radius: 8px;
+  border: 4px solid transparent;
+  background-clip: content-box;
+  background-color: #5d5d5d;
+  -webkit-text-size-adjust: none;
+}
+
+.attribution {
+  font-size: 12px;
+}
+.leaflet-control-zoom {
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.leaflet-touch .leaflet-bar {
+  border-radius: 10px;
+}
+
+@media only screen and (max-width:640px)  {
+  .leaflet-touch .leaflet-bar {
+    display: none;
+  }
+}

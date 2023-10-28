@@ -1,0 +1,11 @@
+from pathlib import Path
+import requests
+
+
+URL = 'https://github.com/eladnava/redalert-android/raw/master/app/src/main/res/raw/cities.json'
+WEB_PATH = Path(__file__).parent / '../web'
+PATH = WEB_PATH / 'src/assets/cities.json'
+
+res = requests.get(URL)
+with PATH.open('wb') as f:
+    f.write(res.content)

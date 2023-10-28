@@ -1,0 +1,170 @@
+{
+    "1": {
+        "name": "missilealert",
+        "en": "Missile Alert",
+        "he": "צבע אדום",
+        "priority": 120
+    },
+    "2": {
+        "name": "uav",
+        "en": "UAV",
+        "he": "חדירת כלי טיס עוין",
+        "priority": 130
+    },
+    "3": {
+        "name": "nonconventional",
+        "en": "Nonconventional",
+        "he": "איום בלתי קונבנציונלי",
+        "priority": 180
+    },
+    "4": {
+        "name": "warning",
+        "en": "Warning",
+        "he": "אזהרה",
+        "priority": 140
+    },
+    "5": {
+        "name": "memorialday1",
+        "en": "Memorial Day 1",
+        "he": "יום הזיכרון 1",
+        "priority": 0
+    },
+    "6": {
+        "name": "memorialday2",
+        "en": "Memorial Day 2",
+        "he": "יום הזיכרון 2",
+        "priority": 0
+    },
+    "7": {
+        "name": "earthquakealert1",
+        "en": "Earthquake Alert 1",
+        "he": "התראת רעידת אדמה",
+        "priority": 90
+    },
+    "8": {
+        "name": "earthquakealert2",
+        "en": "Earthquake Alert 2",
+        "he": "התראת רעידת אדמה",
+        "priority": 110
+    },
+    "9": {
+        "name": "cbrne",
+        "en": "CBRNE",
+        "he": "איום בלתי קונבנציונלי",
+        "priority": 170
+    },
+    "10": {
+        "name": "terrorattack",
+        "en": "Terror Attack",
+        "he": "חשש לחדירת מחבלים",
+        "priority": 160
+    },
+    "11": {
+        "name": "tsunami",
+        "en": "Tsunami",
+        "he": "חשש לצונאמי",
+        "priority": 100
+    },
+    "12": {
+        "name": "hazmat",
+        "en": "Hazmat",
+        "he": "חשש לחומרים מסוכנים",
+        "priority": 150
+    },
+    "13": {
+        "name": "update",
+        "en": "Update",
+        "he": "עדכון",
+        "priority": 0
+    },
+    "14": {
+        "name": "flash",
+        "en": "",
+        "he": "",
+        "priority": 0
+    },
+    "15": {
+        "name": "missilealertdrill",
+        "en": "Missile Alert Drill",
+        "he": "תרגיל צבע אדום",
+        "priority": 40
+    },
+    "16": {
+        "name": "uavdrill",
+        "en": "UAV Drill",
+        "he": "תרגיל חדירת כלי טיס",
+        "priority": 50
+    },
+    "17": {
+        "name": "nonconventionaldrill",
+        "en": "Nonconventional Drill",
+        "he": "תרגיל איום בלתי קונבנציונלי",
+        "priority": 0
+    },
+    "18": {
+        "name": "warningdrill",
+        "en": "Warning Drill",
+        "he": "תרגיל התרעה",
+        "priority": 0
+    },
+    "19": {
+        "name": "memorialdaydrill1",
+        "en": "Memorial Day Drill 1",
+        "he": "יום הזיכרון 1",
+        "priority": 0
+    },
+    "20": {
+        "name": "memorialdaydrill2",
+        "en": "Memorial Day Drill 2",
+        "he": "יום הזיכרון 2",
+        "priority": 0
+    },
+    "21": {
+        "name": "earthquakedrill1",
+        "en": "Earthquake Drill 1",
+        "he": "תרגיל רעידת אדמה",
+        "priority": 10
+    },
+    "22": {
+        "name": "earthquakedrill2",
+        "en": "Earthquake Drill 2",
+        "he": "תרגיל רעידת אדמה",
+        "priority": 30
+    },
+    "23": {
+        "name": "cbrnedrill",
+        "en": "CBRNE Drill",
+        "he": "תרגיל איום בלתי קונבנציונלי",
+        "priority": 10
+    },
+    "24": {
+        "name": "terrorattackdrill",
+        "en": "Terror Attack Drill",
+        "he": "תרגיל חדירת מחבלים",
+        "priority": 70
+    },
+    "25": {
+        "name": "tsunamidrill",
+        "en": "Tsunami Drill",
+        "he": "תרגיל צונאמי",
+        "priority": 20
+    },
+    "26": {
+        "name": "hazmatdrill",
+        "en": "Hazmat Drill",
+        "he": "תרגיל חומרים מסוכנים",
+        "priority": 60
+    },
+    "27": {
+        "name": "updatedrill",
+        "en": "Update Drill",
+        "he": "תרגיל",
+        "priority": 0
+    },
+    "28": {
+        "name": "flashdrill",
+        "en": "Flash Drill",
+        "he": "תרגיל פלאש",
+        "priority": 0
+    }
+}

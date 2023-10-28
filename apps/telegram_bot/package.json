@@ -1,0 +1,28 @@
+{
+  "name": "telegram_bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node build/main.js",
+    "dev": "nodemon src/main.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.8.9",
+    "@types/ws": "^8.5.8",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.3.1",
+    "grammy": "^1.19.2",
+    "magendata": "file:../magendata",
+    "ws": "^8.14.2"
+  }
+}
