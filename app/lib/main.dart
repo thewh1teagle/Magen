@@ -4,10 +4,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:app/utils/api.dart' as api;
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("received: ${message.data}");
-
+  print("received: ${message.data['ids']}");
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
 
   AwesomeNotifications().createNotification(
       content: NotificationContent(
@@ -18,17 +21,18 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
         fullScreenIntent: false,
         autoDismissible: true,
         wakeUpScreen: true,
-        title: 'Hello World!',
-        body: 'This is my first notification!',
+        title: 'אזעקה',
+        body: 'אזעקה במרחב',
         criticalAlert: true,
         displayOnBackground: true,
         displayOnForeground: true,
-        summary: "hello"
   ));
 }
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   
   AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
     if (!isAllowed) {
@@ -61,6 +65,8 @@ void main() async {
     print("error $e");
   }
 
+
+  await api.register();
   // var token = await FirebaseMessaging.instance.getToken();
   // if (token != null) {
   //   print(token);

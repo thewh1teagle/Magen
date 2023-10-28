@@ -1,34 +1,42 @@
-import WebSocket from 'ws';
-import * as config from './config'
-import { citiesJson, polygonsJson, threatsJson } from './data'
-import { ActiveAlert, OrefUpdate } from './interfaces';
-import { findUsers } from './utils/geo';
-import { FastifyInstance } from 'fastify';
+import WebSocket from "ws";
+import * as config from "./config";
+import { citiesJson, polygonsJson, threatsJson } from "./data";
+import { ActiveAlert, OrefUpdate } from "./interfaces";
+import { findUsers } from "./utils/geo";
+import { FastifyInstance } from "fastify";
+import { sendPush } from "./firebase";
 
 export const socket = new WebSocket(config.wsURL, {
-  perMessageDeflate: false
+  perMessageDeflate: false,
 });
 
 export function parseAlerts(update: OrefUpdate): ActiveAlert[] {
-  return update.cities.map(city => {
-    const cityData = citiesJson?.[city]
+  return update.cities.map((city) => {
+    const cityData = citiesJson?.[city];
     return {
       is_test: update.is_test ?? false,
       name: city,
       timestamp: new Date(),
       threat: threatsJson?.[update.category],
       city: cityData,
-      polygon: polygonsJson?.[cityData?.id]
-    }
-  })
+      polygon: polygonsJson?.[cityData?.id],
+    };
+  });
 }
 
 export function startListen(app: FastifyInstance) {
-  socket.addEventListener('message', async (message) => {
-    const update = JSON.parse(message.data as string) as OrefUpdate
-    const alerts = parseAlerts(update)
-    const users = await findUsers(app, alerts)
-    console.log('users => ', users)
-    // sendPush({token: 'eqchRf9ORVi1UCfL8I5xH7:APA91bEZJiTx7uRHadUCy1QIUnZMUp0K3WXVHNHQvtNzOka57ootig3jJczwnA4klnURTzDPPvyOZeeinKPke8K7huqqoTWW1U4wtEuUZTCEGQHyPuqXjZi45T3QyFTqSHKYWWr182a3', data: {hello: 'world'}})
-  })
+  socket.addEventListener("message", async (message) => {
+    const update = JSON.parse(message.data as string) as OrefUpdate;
+    const alerts = parseAlerts(update);
+    const users = await findUsers(app, alerts);
+    const citiesIds = JSON.stringify(alerts.map(a => a.city?.id).flatMap(id => id ? [id.toString()] : []))
+    console.log('ids => ', citiesIds)
+    if (citiesIds.length > 0 && users && users?.length > 0) {
+      console.log('sending to ', users.map(u => u.fcm_token))
+      sendPush({
+        token: users?.map((u) => u.fcm_token),
+        data: {ids: citiesIds},
+      });
+    }
+  });
 }
