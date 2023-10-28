@@ -1,10 +1,10 @@
 import { Bot, InputFile } from "grammy";
 import WebSocket from "ws";
 import * as config from "./config";
-import { ActiveAlert, OrefUpdate } from "../../data/src/interfaces";
+import { ActiveAlert, OrefUpdate } from "../../../packages/magen_common_ts/src/interfaces";
 import { createMessage, getActiveAlerts } from "./utils";
-import {getAlertsImage} from '../../static_map/src/lib'
-import { citiesJson } from "../../data/src/lib";
+import {getAlertsImage} from "../../../packages/static_map/src/lib"
+import { citiesJson } from "../../../packages/magen_common_ts/src/lib";
 import fs from 'fs'
 
 const bot = new Bot(config.botToken!);

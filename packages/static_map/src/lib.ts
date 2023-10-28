@@ -1,7 +1,7 @@
 import StaticMaps, { StaticMapsOptions } from "staticmaps";
-import { citiesJson, polygonsJson } from "../../data/src/lib";
+import { citiesJson, polygonsJson } from "../../magen_common_ts/src/lib";
 import path from "path";
-import { ActiveAlert } from "../../data/src/interfaces";
+import { ActiveAlert } from "../../magen_common_ts/src/interfaces";
 import Jimp from 'jimp'
 import fs from 'fs'
 
