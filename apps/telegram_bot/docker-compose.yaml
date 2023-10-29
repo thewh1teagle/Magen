@@ -1,11 +1,10 @@
 services:
   bot:
+    init: false
     build:
       context: ../
       dockerfile: telegram_bot/Dockerfile
     env_file:
       - .env
-    environment:
-      - TZ=Asia/Jerusalem
     restart: unless-stopped
 

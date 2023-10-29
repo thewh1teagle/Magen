@@ -26,9 +26,15 @@ FROM node:17.9.0-alpine3.15
 
 WORKDIR /usr/src
 
+# Set timezone
+RUN apk add --update tzdata
+ENV TZ=Asia/Jerusalem
+
 COPY telegram_bot/package*.json ./
 
 RUN npm install --only=production
+
+
 
 COPY packages/static_map/src/assets /usr/src/packages/static_map/src/assets
 COPY --from=builder /usr/src/telegram_bot/build ./
