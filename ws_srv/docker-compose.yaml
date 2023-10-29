@@ -9,6 +9,7 @@ services:
     stop_grace_period: 1s
     environment:
       - RUST_LOG=info
+      - TZ=Asia/Jerusalem
 
   ws_mock:
     init: false
@@ -21,12 +22,15 @@ services:
     stop_grace_period: 1s
     environment:
       - RUST_LOG=info
+      - TZ=Asia/Jerusalem
+      
   nginx:
     container_name: nginx
     image: nginx:latest
     restart: unless-stopped
     environment:
       - DOMAIN
+      - TZ=Asia/Jerusalem
     ports:
       - 80:80
       - 443:443 # mapping port 443 to the container's port 443 for https
@@ -34,6 +38,7 @@ services:
       - ./etc/nginx/templates:/etc/nginx/templates:ro
       - ./etc/letsencrypt:/etc/letsencrypt:ro # mounting the folder to the nginx container 
       - ./certbot/data:/var/www/certbot
+
   certbot:
     container_name: certbot
     image: certbot/certbot:latest
