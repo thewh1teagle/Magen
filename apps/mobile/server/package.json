@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc && node build/main.js",
-    "dev": "nodemon -w ./*.json -w src/**/*.ts -w .env --config nodemon.json -r dotenv/config src/main.ts"
+    "dev": "nodemon -w ./*.json -w src/**/*.ts -w .env --config nodemon.json -r dotenv/config src/main.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

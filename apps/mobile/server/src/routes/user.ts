@@ -1,5 +1,5 @@
 import {FastifyInstance} from 'fastify'
-import { LatLng } from '../interfaces'
+import { LatLng } from '../../../../packages/magen_common_ts/src/interfaces'
 
 export default async function routes (app: FastifyInstance, options: object) {
     const collection = app!.mongo!.db!.collection('users')
