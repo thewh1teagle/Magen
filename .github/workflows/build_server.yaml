@@ -1,0 +1,70 @@
+name: build server
+on:
+  push:
+    tags:
+      - v[0-9]+.*
+env:
+  # The project name specified in your Cargo.toml
+  PROJECT_NAME: oref-ws # important
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Create release"
+        uses: "taiki-e/create-gh-release-action@v1"
+        with:
+          # (optional) Path to changelog.
+          # changelog: CHANGELOG.md
+          branch: "main"
+          token: ${{ secrets.GH_TOKEN }}
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: linux-amd64
+            runner: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - name: armv7-unknown-linux-gnueabihf
+            runner: ubuntu-latest
+            target: armv7-unknown-linux-gnueabihf	
+          - name: win-amd64
+            runner: windows-latest
+            target: x86_64-pc-windows-gnu	
+
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: taiki-e/cache-cargo-install-action@v1
+        with:
+          tool: cross
+      - name: Build Binary
+        run: cross build --verbose --locked --release --manifest-path ws_srv/${PROJECT_NAME}/Cargo.toml --target ${{ matrix.target }}
+
+      - name: Release Binary
+        shell: bash
+        run: |
+          BIN_SUFFIX=""
+          if [[ "${{ matrix.runner }}" == "windows-latest" ]]; then
+            BIN_SUFFIX=".exe"
+          fi
+
+          # The built binary output location
+          BIN_OUTPUT="ws_srv/${PROJECT_NAME}/target/${{ matrix.target }}/release/${PROJECT_NAME}${BIN_SUFFIX}"
+
+          # Define a better name for the final binary
+          BIN_RELEASE="${PROJECT_NAME}-${{ matrix.name }}${BIN_SUFFIX}"
+          BIN_RELEASE_VERSIONED="${PROJECT_NAME}-${{ github.ref_name }}-${{ matrix.name }}${BIN_SUFFIX}"
+
+          # Move the built binary where you want it
+          mv "${BIN_OUTPUT}" "./${BIN_RELEASE}"
+          echo "BIN_RELEASE=$BIN_RELEASE" >> $GITHUB_ENV
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.BIN_RELEASE }}
+          token: ${{ secrets.GH_TOKEN }}
