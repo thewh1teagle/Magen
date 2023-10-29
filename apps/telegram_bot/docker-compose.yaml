@@ -5,4 +5,5 @@ services:
       dockerfile: telegram_bot/Dockerfile
     env_file:
       - .env
+    restart: unless-stopped
 

@@ -13,6 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.8.9",
+    "@types/staticmaps": "^1.12.3",
     "@types/ws": "^8.5.8",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
@@ -22,7 +23,9 @@
     "date-fns": "^2.30.0",
     "dotenv": "^16.3.1",
     "grammy": "^1.19.2",
+    "jimp": "^0.22.10",
     "magendata": "file:../magendata",
+    "staticmaps": "^1.12.0",
     "ws": "^8.14.2"
   }
 }

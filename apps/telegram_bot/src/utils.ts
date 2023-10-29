@@ -23,7 +23,6 @@ export function createMessage(alerts: ActiveAlert[]): string {
     const formattedDate = format(date, 'dd/MM/yyyy | HH:mm:ss');
 
     let text = ''
-    console.log('test => ', alerts?.[0].is_test)
     if (alerts?.[0].is_test) {
         text += '*בדיקה* *בדיקה* *בדיקה* *בדיקה* *בדיקה*\n\n'
     }
