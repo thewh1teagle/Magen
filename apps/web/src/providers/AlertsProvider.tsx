@@ -3,9 +3,9 @@ import { useEffect, useRef } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import alaramSound from ".././assets/alarm.mp3";
 import { WS_URL } from "../config";
-import { ActiveAlert, City, OrefUpdate, Threat } from "../../../data/src/interfaces";
+import { ActiveAlert, City, OrefUpdate, Threat } from "../../../packages/magen_common_ts/src/interfaces";
 import { useAudio } from "../hooks/useAudio";
-import { citiesJson, threatsJson } from "../../../data/src/lib";
+import { citiesJson, threatsJson } from "../../../packages/magen_common_ts/src/lib";
 import { useLocalStorage } from 'usehooks-ts'
 
 interface IAlertsContext {

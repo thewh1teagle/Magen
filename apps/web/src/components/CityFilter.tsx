@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { citiesJson, polygonsJson } from "../../../data/src/lib";
+import { citiesJson, polygonsJson } from "../../../packages/magen_common_ts/src/lib";
 import { useAlerts } from "../hooks/useAlerts";
 import { pointInPolygon } from "../utils/geo";
 
