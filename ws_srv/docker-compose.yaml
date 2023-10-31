@@ -14,7 +14,7 @@ services:
   ws_mock:
     init: false
     image: thewh1teagle/oref-ws:latest
-    entrypoint: /usr/local/bin/oref-ws -a "0.0.0.0" -p 3030 -m --interval 5s
+    entrypoint: /usr/local/bin/oref-ws -a "0.0.0.0" -p 3030 -m --interval 10s
     depends_on:
       - nginx
     
