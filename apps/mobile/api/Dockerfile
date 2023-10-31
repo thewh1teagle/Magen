@@ -20,8 +20,7 @@ COPY mobile/api /usr/src/mobile/api
 WORKDIR /usr/src/mobile/api
 RUN npm run build
 
-# for production
-
+# Production
 FROM node:17.9.0-alpine3.15
 
 WORKDIR /usr/src
@@ -39,3 +38,4 @@ COPY mobile/api/docker-entrypoint.sh ./
 ENTRYPOINT ["/usr/src/docker-entrypoint.sh"]
 
 # ENTRYPOINT ["node","mobile/api/src/main.js"]
+

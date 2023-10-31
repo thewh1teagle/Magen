@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:app/firebase_options.dart';
 import 'package:app/models/city.dart';
@@ -9,26 +10,35 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'utils/local_db.dart';
 
-
+@pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  var shared_preferences = await SharedPreferences.getInstance();
+  await shared_preferences.reload();
+  // if (Platform.isAndroid) {
+  //   SharedPreferencesAndroid.registerWith();
+  // } else if (Platform.isIOS) {
+  //   SharedPreferencesIOS.registerWith();
+  // }
   print("got message ${message.data['ids']}");
   var db = await LocalDB.getInstance();
   var shared = await Shared.getInstance();
   List<City> cities = await db.getCities();
-  print("cities: ${cities.first.id}");
+  print("cities: ${cities}");
 
   var threatID = message.data["threat"] as String;
   var idsString = message.data["ids"];
   var idsArray = jsonDecode(idsString);
-  var filtered = cities.where((city) => idsArray.contains(city.id.toString()));
-  var citiesString = filtered.map((city) => city.he).join(",");
+  var filtered =
+      cities.where((city) => idsArray.contains(city.id.toString())).toList();
+  var citiesString = filtered.map((city) => city.he).join(", ");
   var threat = shared.threats[threatID];
 
   AwesomeNotifications().createNotification(
       content: NotificationContent(
-        icon: "resource://drawable/res_launcher_icon",
+    icon: "resource://drawable/res_launcher_icon",
     id: 10,
     channelKey: 'basic_channel',
     actionType: ActionType.Default,
@@ -46,6 +56,9 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 Future<void> init() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   AwesomeNotifications().initialize(
       // set the icon to null if you want to use the default app icon
@@ -60,6 +73,18 @@ Future<void> init() async {
             ledColor: Colors.white)
       ],
       debug: true);
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
   AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
     if (!isAllowed) {
       // This is just a basic example. For real apps, you must show some
@@ -71,9 +96,6 @@ Future<void> init() async {
 
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await dotenv.load(fileName: ".env");
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 }
 
 void main() async {

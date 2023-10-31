@@ -62,11 +62,15 @@ class _HomeRouteState extends State<HomeRoute> {
   // final controller = TextEditingController(text: "");
 
   Future<void> onSave() async {
-    if (selected.isNotEmpty) {
-      db.setCities(selected);
-      var token = await api.register(selected);
-      db.setToken(token);
-    }
+  
+    print("selected ${selected}");
+    await db.setCities(selected);
+    var newCities = await db.getCities();
+    print("newCities: ${newCities}");
+    print("Token: ${await db.getToken()}");
+    var token = await api.register(selected);
+    db.setToken(token);
+    
   }
 
   @override

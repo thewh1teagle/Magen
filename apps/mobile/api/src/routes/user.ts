@@ -11,20 +11,31 @@ export default async function routes (app: FastifyInstance, options: object) {
 
     app.post<{ Body: RegisterBody }>('/create', async (req, res) => {
     
-        // Check if a document with the given fcm_token exists
-        const existingDocument = await collection.findOne({ fcm_token: req.body.fcm_token });
-        if (existingDocument) {
-            // If a document with the fcm_token already exists, return an error or appropriate response
-            return { message: 'FCM token already exists' };
-        } else {
-            // Insert the data into the collection because the fcm_token doesn't exist
-            await collection.insertOne({
+        // Define the filter to find the document by fcm_token
+        const filter = { fcm_token: req.body.fcm_token };
+    
+        // Define the update operation
+        const update = {
+            $set: {
                 cities: req.body.cities,
                 fcm_token: req.body.fcm_token
-            });
+            }
+        };
+    
+        // Specify the upsert option to insert if not found
+        const options = { upsert: true };
+    
+        // Use updateOne to perform the upsert
+        const result = await collection.updateOne(filter, update, options);
+    
+        if (result.upsertedCount > 0) {
+            // If a new document was inserted, return a success message
             return { message: 'User created successfully' };
+        } else {
+            // If an existing document was updated, return an appropriate response
+            return { message: 'User updated successfully' };
         }
-    });    
+    });     
     
     interface UpdateBody extends RegisterBody {
         id: string
