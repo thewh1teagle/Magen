@@ -35,6 +35,6 @@ server {
     }
 
     location /api {
-        proxy_pass http://api:3030/api
+        proxy_pass http://api:3030/api;
     }
 }
