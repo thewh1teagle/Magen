@@ -44,6 +44,7 @@ dependencies:
   awesome_notifications_core: ^0.8.1
   flutter_dotenv: ^5.1.0
   shared_preferences: ^2.2.2
+  velocity_x: ^3.3.0
 
 dev_dependencies:
   flutter_test:

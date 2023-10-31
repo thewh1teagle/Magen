@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:app/models/polygon.dart';
+import 'package:app/utils/json.dart';
 import 'package:flutter/services.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 
@@ -11,11 +12,11 @@ bool pointInPolygon(num lat, num lng, List<List<double>> polygon) {
 }
 
 Future<String?> cityByLoc(double lat, double lng) async {
-  var polygonsStr = await rootBundle.loadString('assets/polygons.json');
+  var polygonsStr = readJson('assets/polygons.json');
   var data = jsonDecode(polygonsStr);
 
   data.forEach((key, dynamicPolygon) {
-    var polygon = Polygon.fromDynamic(dynamicPolygon);
+    var polygon = Polygon.fromJson(dynamicPolygon);
     if (pointInPolygon(lat, lng, polygon.data)) {
       return key;
     }
