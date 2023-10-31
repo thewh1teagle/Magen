@@ -9,10 +9,10 @@ services:
     ports:
       - "3031:3030"
     networks:
-      - server_default
+      - ws_srv_default
     restart: unless-stopped
     stop_grace_period: 1s
 
 networks:
-  server_default:
+  ws_srv_default:
     external: true
