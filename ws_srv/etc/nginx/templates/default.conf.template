@@ -33,8 +33,4 @@ server {
         proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;
     }
-
-    location /api {
-        proxy_pass http://api:3030/api;
-    }
 }
