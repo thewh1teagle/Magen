@@ -5,3 +5,6 @@ target
 apps/mobile
 apps/web
 ws_srv/
+*/build
+*/target
+*/node_modules

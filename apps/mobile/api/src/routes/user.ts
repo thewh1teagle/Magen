@@ -13,7 +13,6 @@ export default async function routes (app: FastifyInstance, options: object) {
     
         // Check if a document with the given fcm_token exists
         const existingDocument = await collection.findOne({ fcm_token: req.body.fcm_token });
-    
         if (existingDocument) {
             // If a document with the fcm_token already exists, return an error or appropriate response
             return { message: 'FCM token already exists' };

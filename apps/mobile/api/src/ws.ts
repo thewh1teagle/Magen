@@ -28,14 +28,16 @@ export function startListen(app: FastifyInstance) {
   socket.addEventListener("message", async (message) => {
     const update = JSON.parse(message.data as string) as OrefUpdate;
     const alerts = parseAlerts(update);
-    const users = await findUsers(app, alerts);
+    let users = await findUsers(app, alerts);
+    users = users?.filter(u => u.fcm_token !== undefined && u.fcm_token !== null)
+    
     const citiesIds = JSON.stringify(alerts.map(a => a.city?.id).flatMap(id => id ? [id.toString()] : []))
-    console.log('ids => ', citiesIds)
     if (citiesIds.length > 0 && users && users?.length > 0) {
-      console.log('sending to ', users.map(u => u.fcm_token))
+      console.log('sending to ', users)
+      console.log(citiesIds);
       sendPush({
         token: users?.map((u) => u.fcm_token),
-        data: {ids: citiesIds},
+        data: {ids: citiesIds, threat: update.category},
       });
     }
   });

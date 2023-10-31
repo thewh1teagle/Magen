@@ -14,7 +14,7 @@ import { sendPush } from './firebase'
 export const app = fastify({logger: {}})
 app.register(db_connector)
 app.register(cors, {origin: "*", allowedHeaders: "*", methods: "*"})
-app.register(userRoute, {prefix: '/user'})
+app.register(userRoute, {prefix: '/api/user'})
 
 
 app.listen({ port: config.port, host: config.host }, function (err, address) {

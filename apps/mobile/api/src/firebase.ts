@@ -17,15 +17,14 @@ interface IMessage {
 }
 
 export async function sendPush(message: IMessage) {
+    console.log('message => ', message)
     switch (true) {
         case Array.isArray(message.token): {
             fcm.sendEachForMulticast({tokens: message.token as string[], data: message.data})
             break
         }
         default: {
-            console.log('sedning push')
             const res = await fcm.send({token: message.token as string, data: message.data})
-            console.log('res => ', res)
         }
     }
 }

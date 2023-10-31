@@ -1,0 +1,18 @@
+services:
+  api:
+    init: false
+    image: thewh1teagle/magen-api:latest
+    env_file:
+      - .env
+    volumes:
+      - ./src/assets/service_account.json:/usr/src/mobile/api/src/assets/service_account.json:ro
+    ports:
+      - "3031:3030"
+    networks:
+      - server_default
+    restart: unless-stopped
+    stop_grace_period: 1s
+
+networks:
+  server_default:
+    external: true

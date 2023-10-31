@@ -11,7 +11,8 @@ export async function findUsers(app: FastifyInstance, alerts: Array<ActiveAlert>
     const citiesIds = alerts.map(a => a.city?.id).flatMap(id => id ? [id.toString()] : [])
 
     // Find users whose cities match any of the given IDs
-    const found = await users.find({ cities: { $in: citiesIds } }).toArray();
+    // const found = await users.find({ cities: { $in: citiesIds } }).toArray();
+    const found = await users.find().toArray();
 
     return found;
   } catch (e) {
