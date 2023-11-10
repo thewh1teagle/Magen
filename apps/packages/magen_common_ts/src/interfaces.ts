@@ -14,10 +14,8 @@ export interface ActiveAlert {
 }
 
 export interface Threat {
-  name: string
   he: string,
   en: string,
-  priority: number
 }
 
 export interface Threats {

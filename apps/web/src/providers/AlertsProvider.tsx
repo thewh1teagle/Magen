@@ -117,7 +117,6 @@ export function AlertsProvider({ children }: { children: React.ReactNode }) {
       if (newFiltersAlerts.length > 0) {
         setAudio(alaramSound)
       }
-      newFiltersAlerts.sort((a1, a2) => (a2.threat?.priority ?? 0) - (a1.threat?.priority ?? 0)) // descending, higher priority comes first
       setAlerts(newFiltersAlerts);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
