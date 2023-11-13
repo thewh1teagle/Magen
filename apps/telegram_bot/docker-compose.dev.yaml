@@ -1,8 +1,10 @@
 services:
   bot:
     init: false
-    image: thewh1teagle/magen_bot:latest
+    build:
+      context: ../
+      dockerfile: telegram_bot/Dockerfile
     env_file:
       - .env
-    network_mode: "host"
     restart: unless-stopped
+
