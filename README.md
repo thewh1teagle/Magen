@@ -18,11 +18,11 @@ Interactive web based map for pikud haoref
 # Contents of Repository
 
 Core library written in Rust for interacting with pikud haoref
-- [oref-rs](https://github.com/thewh1teagle/Magen/tree/main/ws_srv/oref-rs)
+- [oref-rs](https://github.com/thewh1teagle/Magen/tree/main/magen_srv/oref)
   
 Rust based `ws` server which emits new alerts from pikud haoref
 
-- [oref-ws](https://github.com/thewh1teagle/Magen/tree/main/ws_srv/oref-ws)
+- [oref-ws](https://github.com/thewh1teagle/Magen/tree/main/magen_srv/magen_srv)
 
 `NodeJS` API along with `Flutter` App which uses `Firebase` for getting new alerts
 
