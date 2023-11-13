@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
 members = [
-    "oref-rs",
-    "oref-ws",
+    "oref",
+    "magen_srv",
 ]

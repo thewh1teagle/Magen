@@ -1,8 +1,8 @@
 services:
   ws:
     init: false
-    image: thewh1teagle/oref-ws:latest
-    entrypoint: /usr/local/bin/oref-ws -a "0.0.0.0" -p 3030
+    image: thewh1teagle/magen_srv:latest
+    entrypoint: /usr/local/bin/magen_srv -a "0.0.0.0" -p 3030
     depends_on:
       - nginx
     restart: unless-stopped
@@ -13,8 +13,8 @@ services:
 
   ws_mock:
     init: false
-    image: thewh1teagle/oref-ws:latest
-    entrypoint: /usr/local/bin/oref-ws -a "0.0.0.0" -p 3030 -m --interval 10s
+    image: thewh1teagle/magen_srv:latest
+    entrypoint: /usr/local/bin/magen_srv -a "0.0.0.0" -p 3030 -m --interval 10s
     depends_on:
       - nginx
     
