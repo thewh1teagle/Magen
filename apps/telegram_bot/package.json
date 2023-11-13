@@ -25,6 +25,8 @@
     "grammy": "^1.19.2",
     "jimp": "^0.22.10",
     "magendata": "file:../magendata",
+    "pino": "^8.16.1",
+    "pino-pretty": "^10.2.3",
     "staticmaps": "^1.12.0",
     "ws": "^8.14.2"
   }

@@ -1,38 +1,37 @@
-import { Bot, InputFile } from "grammy";
 import WebSocket from "ws";
+import { OrefUpdate } from "../../packages/magen_common_ts/src/interfaces";
+import { sendAlerts } from "./bot";
 import * as config from "./config";
-import { ActiveAlert, OrefUpdate } from "../../packages/magen_common_ts/src/interfaces";
-import { createMessage, getActiveAlerts } from "./utils";
-import {getAlertsImage} from "../../packages/static_map/src/lib"
-import { citiesJson } from "../../packages/magen_common_ts/src/lib";
-import fs from 'fs'
+import { getAlerts, logger } from "./utils";
+import { EventQueue } from "./EventQueue";
 
-const bot = new Bot(config.botToken!);
-
+const queue = new EventQueue(sendAlerts)
 
 function connect() {
+  logger.info('WS connecting')
     let conn = new WebSocket(config.wsURL, {
         perMessageDeflate: false,
     });
+    logger.info('WS connected')
     return conn
 }
 
 async function onMessage(message: WebSocket.MessageEvent) {
+  logger.debug(message.data)
   const update = JSON.parse(message.data.toString()) as OrefUpdate;
-  
-  const alerts = getActiveAlerts(update)
-  await bot.api.sendMessage(config.ChannelID, createMessage(alerts), {
-    parse_mode: "Markdown",
-    disable_web_page_preview: true
-  });
-  const image = await getAlertsImage(alerts)
-  bot.api.sendPhoto(config.ChannelID, new InputFile(image))
+  const alerts = getAlerts(update)
+  queue.enqueue(alerts)
 }
 
-let socket = connect()
-socket.addEventListener("message", onMessage);
-socket.addEventListener('close', () => {
-    setTimeout(() => {
-        socket = connect()
-    }, 2000)
-})
+async function main() {
+  logger.info("Running")
+  let socket = connect()
+  socket.addEventListener("message", onMessage);
+  socket.addEventListener('close', () => {
+      setTimeout(() => {
+          logger.info('WS disconnected')
+          socket = connect() // reconnect
+      }, 2000)
+  })
+}
+main()
