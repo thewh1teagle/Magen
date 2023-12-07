@@ -24,7 +24,7 @@ Rust based `ws` server which emits new alerts from pikud haoref
 
 - [magen_srv](https://github.com/thewh1teagle/Magen/tree/main/magen_srv/magen_srv)
 
-`NodeJS` API along with `Flutter` App which uses `Firebase` for getting new alerts
+`NodeJS` API along with `React Native` App which uses `Firebase` for getting new alerts
 
 - [mobile](https://github.com/thewh1teagle/Magen/tree/main/apps/mobile)
 
