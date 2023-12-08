@@ -1,8 +1,9 @@
 {
-  "name": "magen_common",
+  "name": "magen-common",
   "version": "1.0.0",
   "description": "",
-  "main": "build/lib.js",
+  "main": "dist/lib.js",
+  "types": "dist/lib.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node build/lib.js"
@@ -20,5 +21,8 @@
   "dependencies": {
     "robust-point-in-polygon": "^1.0.3"
   },
-  "files": ["/build"]
+  "files": [
+    "/dist",
+    "/src"
+  ]
 }

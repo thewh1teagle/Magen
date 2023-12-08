@@ -4,11 +4,12 @@ import {
   citiesJson,
   pointInPolygon,
   polygonsJson,
-} from '../../../../packages/magen_common_ts/src/lib'
+} from 'magen-common'
 import {useMMKVStorage} from 'react-native-mmkv-storage'
 import {MMKVLoader} from 'react-native-mmkv-storage'
-import {City} from '../../../../packages/magen_common_ts/src/interfaces'
-import { TextInput, TouchableOpacity, View } from 'react-native'
+
+import { Button, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { interfaces } from 'magen-common'
 
 const citiesArray = Object.values(citiesJson)
 const storage = new MMKVLoader().initialize()
@@ -16,7 +17,7 @@ const storage = new MMKVLoader().initialize()
 export default function CityFilter() {
   const [searchValue, setSearchValue] = useState('')
   const [focused, setFocused] = useState(false)
-  const [filters, setFilters] = useMMKVStorage<City[]>('filters', storage, [])
+  const [filters, setFilters] = useMMKVStorage<interfaces.City[]>('filters', storage, [])
 
   const onFocus = () => setFocused(true)
   const onBlur = () => {
@@ -49,13 +50,12 @@ export default function CityFilter() {
   return (
     <View className="pt-3 w-full items-center justify-center flex flex-col">
       <View className="flex flex-row items-center gap-1 justify-center w-full">
-        <button
-          onClick={() => setFilters([])}
-          type="button"
+        <Button
+          title='נקה'
+          onPress={() => setFilters([])}
           className="focus:outline-none text-white bg-slate-600 hover:bg-slate-800 font-medium rounded-lg text-xs px-3 h-[35px]"
-        >
-          נקה
-        </button>
+        />
+          
 
         <View className="relative flex-1">
           {focused && found.length > 0 && (
@@ -69,14 +69,16 @@ export default function CityFilter() {
                     setSearchValue('')
                   }}
                 >
+                  <Text>
                   {city.he}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
           )}
 
           <View className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-            <svg
+            {/* <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -89,7 +91,7 @@ export default function CityFilter() {
                 strokeLinejoin="round"
                 d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
               />
-            </svg>
+            </svg> */}
           </View>
           <TextInput
             value={searchValue}
@@ -102,7 +104,7 @@ export default function CityFilter() {
           />
         </View>
         <View className="bg-slate-600 p-1 rounded-lg cursor-pointer hidden sm:flex">
-          <svg
+          {/* <svg
             // onProgress={findLocation}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -120,11 +122,11 @@ export default function CityFilter() {
               strokeLinejoin="round"
               d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
             />
-          </svg>
+          </svg> */}
         </View>
       </View>
       {filters.length === 0 && (
-        <View className="text-xs opacity-50 pt-1">יוצגו התרעות בכל הארץ</View>
+        <Text className="text-xs opacity-50 pt-1">יוצגו התרעות בכל הארץ</Text>
       )}
       <View className="h-[100px w-full mt-2 overflow-y-auto scrollbar flex flex-row flex-wrap p-2 gap-1.5">
         {filters.map(city => (
@@ -133,7 +135,7 @@ export default function CityFilter() {
             className="dark:bg-gray-700 p-2.5  text-sm rounded-lg flex flex-row items-center gap-1"
             onPress={() => setFilters(filters.filter(c => c !== city))}
           >
-            <svg
+            {/* <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -146,9 +148,10 @@ export default function CityFilter() {
                 strokeLinejoin="round"
                 d="M6 18L18 6M6 6l12 12"
               />
-            </svg>
-
+            </svg> */}
+            <Text>
             {city.he}
+            </Text>
           </TouchableOpacity>
         ))}
       </View>

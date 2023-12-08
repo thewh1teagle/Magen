@@ -1,0 +1,76 @@
+{
+    "1": {
+        "he": "צבע אדום",
+        "en": "Missile Alert",
+        "ru": "Ракетный обстрел",
+        "ar": "اطلاق قذائف وصواريخ"
+    },
+    "2": {
+        "he": "כללי",
+        "en": "General"
+    },
+    "4": {
+        "he": "חשש לאירוע רדיולוגי",
+        "en": "Radiological event"
+    },
+    "5": {
+        "he": "חשש לצונאמי",
+        "en": "Tsunami Warning"
+    },
+    "6": {
+        "he": "חדירת כלי טיס עוין",
+        "en": "Hostile aircraft intrusion"
+    },
+    "3": {
+        "he": "רעידת אדמה",
+        "en": "earth quake"
+    },
+    "13": {
+        "he": "חדירת מחבלים",
+        "en": "Terrorist infiltration"
+    },
+    "7": {
+        "he": "אירוע חומרים מסוכנים",
+        "en": "Hazardous Materials Event"
+    },
+    "10": {
+        "he": "לא ידוע",
+        "en": "Uknown"
+    },
+    "101": {
+        "he": "תרגיל ירי רקטות וטילים",
+        "en": "Rocket and missile fire drill"
+    },
+    "102": {
+        "he": "תרגיל כללי",
+        "en": "General drill"
+    },
+    "104": {
+        "he": "תרגיל רדיולוגי",
+        "en": "radiologic drill"
+    },
+    "105": {
+        "he": "תרגיל צונאמי",
+        "en": "Tsunami drill"
+    },
+    "106": {
+        "he": "תרגיל צבאי",
+        "en": "military drill"
+    },
+    "103": {
+        "he": "תרגיל רעידת אדמה",
+        "en": "Earthquake drill"
+    },
+    "113": {
+        "he": "תרגיל חדירת מחבלים",
+        "en": "Terrorist infiltration drill"
+    },
+    "107": {
+        "he": "תרגיל חומרים מסוכנים",
+        "en": "Hazardous Materials drill"
+    },
+    "110": {
+        "he": "תרגיל כללי",
+        "en": "General Drill"
+    }
+}
