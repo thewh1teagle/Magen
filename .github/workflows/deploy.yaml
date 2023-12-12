@@ -39,8 +39,7 @@ jobs:
           
       - name: Install magen-common dependencies
         run: npm install
-        working-directory: apps/packages/megen-common
-
+        working-directory: apps/packages/magen-common
 
       - name: Install dependencies
         run: npm install
