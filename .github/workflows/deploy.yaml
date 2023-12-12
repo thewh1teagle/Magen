@@ -27,9 +27,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./apps/web
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -47,6 +44,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: apps/web
 
 
       - name: Build
@@ -55,6 +53,7 @@ jobs:
           VITE_WS_URL: ${{ secrets.VITE_WS_URL }}
           VITE_MAP_TILE_URL: ${{ secrets.VITE_MAP_TILE_URL }}
           VITE_MAP_SUBDOMAINS: ${{ secrets.VITE_MAP_SUBDOMAINS }}
+        working-directory: apps/web
 
 
       - name: Setup Pages
