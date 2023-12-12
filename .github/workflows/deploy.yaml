@@ -42,7 +42,7 @@ jobs:
           
       - name: Install magen-common dependencies
         run: npm install
-        working-directory: ${{ github.workspace }}/apps/packages/megen-common
+        working-directory: apps/packages/megen-common
 
 
       - name: Install dependencies
