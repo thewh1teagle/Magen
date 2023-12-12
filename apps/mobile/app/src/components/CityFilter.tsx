@@ -1,4 +1,4 @@
-import { Input, ListItem, ScrollView, Text, View, ZStack, createSelectItemParentScope } from "tamagui"
+import { Circle, Input, ListItem, ScrollView, Square, Text, View, XStack, ZStack, createSelectItemParentScope } from "tamagui"
 import { Button } from 'tamagui'
 import {
   citiesJson,
@@ -6,8 +6,6 @@ import {
   polygonsJson,
   interfaces
 } from '@magen/common'
-
-
 
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { MMKVLoader } from 'react-native-mmkv-storage'
@@ -27,7 +25,7 @@ export default function CityFilter() {
 
   function addCity(city: interfaces.City) {
     console.log('calling toast show')
-    toast.show(`העיר נוספה בהצלחה ויתקבלו התראות`, {duration: 3000})
+    toast.show(`העיר נוספה בהצלחה ויתקבלו התראות`, { duration: 3000 })
     console.log('adding city', city)
     setFilters([...filters, city])
     setSearchValue('')
@@ -42,13 +40,15 @@ export default function CityFilter() {
   return (
     <View>
       <View marginTop='$5' paddingHorizontal='$2' position="relative" w='100%' display="flex" justifyContent="center" alignItems="center">
+
         <Input value={searchValue} onChangeText={setSearchValue} direction="rtl" textAlign="right" placeholder="ישוב" w='100%' />
         <ZStack w='100%'>
-        {filters.length === 0 && (
+
+          {filters.length === 0 && (
             <View display="flex" flexDirection="row" gap='$2' flexWrap="wrap" marginTop='$3' justifyContent="center">
               <Text fontSize='$3' opacity={0.4} textAlign="center">נא לבחור ישוב</Text>
-              </View>
-            )}
+            </View>
+          )}
           <View display="flex" flexDirection="row" gap='$2' flexWrap="wrap" marginTop='$3'>
             {filters.map(f => (
               <View key={f.id} minWidth='$8' minHeight='$3' paddingHorizontal='$2' display="flex" borderRadius='$3' alignItems="center" alignContent="space-around" backgroundColor='$blue1' flexDirection="row" justifyContent="space-between">
@@ -59,17 +59,19 @@ export default function CityFilter() {
           </View>
           {
             found.length > 0 && (
-              <View shadowColor='#ddd' shadowOffset={{width: 0, height: 2}} shadowOpacity={0.3} shadowRadius={4}>
-              <ScrollView keyboardShouldPersistTaps='handled' position="absolute" display="flex" flexDirection="column" w='100%' maxHeight='$16' top='100%' borderBottomLeftRadius='$4' borderBottomRightRadius='$4'>
-                {found.map(c => (
-                  <ListItem onPress={() => addCity(c)} key={c.id}>
-                    <Text>{c.he}</Text>
-                  </ListItem>
-                ))}
-              </ScrollView>
+              <View shadowColor='#ddd' shadowOffset={{ width: 0, height: 2 }} shadowOpacity={0.3} shadowRadius={4} height='$16' maxHeight='$16' top='100%' position="absolute" w='100%'>
+                <ScrollView keyboardShouldPersistTaps='handled' display="flex" flexDirection="column" w='100%'   borderBottomLeftRadius='$4' borderBottomRightRadius='$4'>
+                  {found.map(c => (
+                    <ListItem onPress={() => addCity(c)} key={c.id}>
+                      <Text>{c.he}</Text>
+                    </ListItem>
+                  ))}
+                </ScrollView>
+
               </View>
             )
           }
+          
         </ZStack>
 
       </View>

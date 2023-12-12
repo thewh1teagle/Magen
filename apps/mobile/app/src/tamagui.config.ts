@@ -77,3 +77,4 @@ declare module '@tamagui/core' {
 }
 
 export default appConfig
+export const tamaguiConfig = appConfig

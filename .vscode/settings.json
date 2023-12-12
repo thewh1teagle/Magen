@@ -4,4 +4,5 @@
             "mode": "auto"
         }
     ],
+    "nandorojo-tamagui.configPath": "apps\\mobile\\app\\src\\tamagui.config.ts"
 }

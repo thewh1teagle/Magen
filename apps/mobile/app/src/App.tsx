@@ -3,9 +3,11 @@ import notifee from '@notifee/react-native'
 import CityFilter from './components/CityFilter'
 import config from './tamagui.config'
 import { TamaguiProvider, Text, View } from 'tamagui'
-import Home from './Home'
+import HomeScreen from './screens/Home'
 import { Toast, useToastController, useToastState, ToastProvider, ToastViewport } from '@tamagui/toast'
 import CurrentToast from './components/CurrentToast'
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 
 async function onDisplayNotification() {
@@ -35,21 +37,28 @@ async function onDisplayNotification() {
   })
 }
 
+const Stack = createNativeStackNavigator();
+
+
 function App(): JSX.Element {
   return (
-    <TamaguiProvider config={config} defaultTheme='light'>
-      <ToastProvider native={false}>
-        
-        <View h='100%' w='100%' backgroundColor='$blue3Light'>
-        <ToastViewport flexDirection="row" justifyContent='center' alignItems='center' bottom={50} w='100%'  />
-          <Text fontSize='$4' textAlign='center' marginTop='$5' color='red'>מגן</Text>
-
-          <CityFilter />
+    <NavigationContainer>
+      <TamaguiProvider config={config} defaultTheme='light'>
+        <ToastProvider native={false}>
           <CurrentToast />
+          <ToastViewport flexDirection="row" justifyContent='center' alignItems='center' bottom={50} w='100%' />
 
-        </View>
-      </ToastProvider>
-    </TamaguiProvider>
+          <Stack.Navigator initialRouteName='home'>
+            <Stack.Screen
+              name="home"
+              component={HomeScreen}
+              options={{ title: '' }}
+            />
+          </Stack.Navigator>
+
+        </ToastProvider>
+      </TamaguiProvider>
+    </NavigationContainer>
   )
 }
 
