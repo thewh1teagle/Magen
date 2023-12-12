@@ -2,6 +2,8 @@ import React from 'react'
 import notifee from '@notifee/react-native'
 import CityFilter from './components/CityFilter1'
 // import {OrefUpdate} from '../../../packages/magen_common_ts/src/interfaces'
+import config from './tamagui.config'
+import { TamaguiProvider } from 'tamagui'
 
 async function onDisplayNotification() {
   // Request permissions (required for iOS)
@@ -32,7 +34,9 @@ async function onDisplayNotification() {
 
 function App(): JSX.Element {
   return (
+    <TamaguiProvider config={config} defaultTheme='light'>
       <CityFilter />
+    </TamaguiProvider>
   )
 }
 

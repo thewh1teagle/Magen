@@ -4,8 +4,16 @@
 import { config } from '@tamagui/config/v2'
 import { Text, View } from 'react-native'
 import { createTamagui } from 'tamagui' // or '@tamagui/core'
+import { createMedia } from '@tamagui/react-native-media-driver'
+import { getTokens } from '@tamagui/core'
+import { themes, tokens } from '@tamagui/themes'
+import { media } from './media'
 
-const appConfig = createTamagui(config)
+const appConfig = createTamagui({
+  media,
+  themes,
+  tokens
+})
 
 export type AppConfig = typeof appConfig
 
