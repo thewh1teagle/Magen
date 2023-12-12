@@ -1,15 +1,16 @@
 /* eslint-disable */
-import {useState} from 'react'
+import { useEffect, useState } from 'react'
 import {
   citiesJson,
   pointInPolygon,
   polygonsJson,
 } from 'magen-common'
-import {useMMKVStorage} from 'react-native-mmkv-storage'
-import {MMKVLoader} from 'react-native-mmkv-storage'
+import { useMMKVStorage } from 'react-native-mmkv-storage'
+import { MMKVLoader } from 'react-native-mmkv-storage'
 
-import { Button, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Button, Text, View, ScrollView, TextInput, TouchableOpacity, Touchable, Keyboard } from 'react-native'
 import { interfaces } from 'magen-common'
+import { ChevronRight, Moon, Star } from '@tamagui/lucide-icons'
 
 const citiesArray = Object.values(citiesJson)
 const storage = new MMKVLoader().initialize()
@@ -18,7 +19,6 @@ export default function CityFilter() {
   const [searchValue, setSearchValue] = useState('')
   const [focused, setFocused] = useState(false)
   const [filters, setFilters] = useMMKVStorage<interfaces.City[]>('filters', storage, [])
-
   const onFocus = () => setFocused(true)
   const onBlur = () => {
     setTimeout(() => {
@@ -32,129 +32,50 @@ export default function CityFilter() {
       !filters.includes(c),
   )
 
-  //   function findLocation() {
-  //     navigator.geolocation.getCurrentPosition(position => {
-  //       for (const city of citiesArray) {
-  //         const polygon = polygonsJson?.[city.id]
-  //         const [lat, lng] = [position.coords.latitude, position.coords.longitude]
-  //         if (
-  //           pointInPolygon(polygon, [lat, lng]) &&
-  //           !filters.some(f => f.id === city.id)
-  //         ) {
-  //           setFilters([...filters, city])
-  //         }
-  //       }
-  //     })
-  //   }
 
+
+  console.log('filters => ', filters)
   return (
-    <View className="pt-3 w-full items-center justify-center flex flex-col">
-      <View className="flex flex-row items-center gap-1 justify-center w-full">
-        <Button
-          title='נקה'
-          onPress={() => setFilters([])}
-          className="focus:outline-none text-white bg-slate-600 hover:bg-slate-800 font-medium rounded-lg text-xs px-3 h-[35px]"
-        />
-          
-
-        <View className="relative flex-1">
-          {focused && found.length > 0 && (
-            <View className="absolute w-full max-h-[100px] bg-gray-700 bottom-0 translate-y-[105%] rounded-lg overflow-y-auto scrollbar flex flex-col z-[1]">
-              {found.map(city => (
-                <TouchableOpacity
-                  key={city.lat + city.lng}
-                  className="py-2 cursor-pointer w-full hover:bg-slate-500 px-2 rounded-lg"
-                  onPress={() => {
-                    setFilters([...filters, city])
-                    setSearchValue('')
-                  }}
-                >
-                  <Text>
-                  {city.he}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-
-          <View className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-            {/* <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-              />
-            </svg> */}
-          </View>
+    <View style={{padding: 10}}>
+      <Text style={{textAlign: 'center', fontSize: 45}}>מגן</Text>
+      <View style={{display: 'flex', flexDirection: 'row', gap: 3, marginTop: 20}}>
+        <TouchableOpacity style={{backgroundColor: 'blue', height: 35, paddingHorizontal: 25, borderRadius: 25, display: 'flex', justifyContent: 'center', alignItems: 'center'}} onPress={() => setSearchValue('')}><Text>נקה</Text></TouchableOpacity>
+        <View style={{position: 'relative', flex: 1}}>
           <TextInput
+            style={{padding: 0, borderStyle: 'solid', borderWidth: 3, borderColor: 'gray'}}
+            textAlign='right'
             value={searchValue}
             onFocus={onFocus}
-            onBlur={onBlur}
+            // onBlur={onBlur}
             onChangeText={setSearchValue}
             id="input-group-1"
-            className="h-[35px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="שם יישוב..."
           />
-        </View>
-        <View className="bg-slate-600 p-1 rounded-lg cursor-pointer hidden sm:flex">
-          {/* <svg
-            // onProgress={findLocation}
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            className="w-[1.5rem] h-[1.7rem] stroke-slate-300"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
-            />
-          </svg> */}
+          <View>
+            {filters.map(f => (
+              <TouchableOpacity onPress={() => setFilters(filters.filter(i => i.id !== f.id))}  key={f.id}>
+                <Text>{f.he}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          {found.length > 0 && (
+            <ScrollView keyboardShouldPersistTaps='handled' style={{zIndex: 1, backgroundColor: '#fafafa', position: 'absolute', top: 35, width: '100%', overflow: 'scroll', maxHeight: 400, display: 'flex', flexDirection: 'column'}}>
+              {found.map(c => (
+                <TouchableOpacity 
+                  style={{padding: 10}}
+                  onPress={() => {
+                  setFilters([...filters, c])
+                    Keyboard.dismiss()
+                  setSearchValue('')
+                }}  key={c.id}><Text style={{color: 'black'}}>{c.he}</Text></TouchableOpacity>
+              ))}
+          
+            </ScrollView>
+          )}
+
         </View>
       </View>
-      {filters.length === 0 && (
-        <Text className="text-xs opacity-50 pt-1">יוצגו התרעות בכל הארץ</Text>
-      )}
-      <View className="h-[100px w-full mt-2 overflow-y-auto scrollbar flex flex-row flex-wrap p-2 gap-1.5">
-        {filters.map(city => (
-          <TouchableOpacity
-            key={city.he}
-            className="dark:bg-gray-700 p-2.5  text-sm rounded-lg flex flex-row items-center gap-1"
-            onPress={() => setFilters(filters.filter(c => c !== city))}
-          >
-            {/* <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-4 cursor-pointer"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg> */}
-            <Text>
-            {city.he}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+
     </View>
   )
 }

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Config from 'react-native-config'
 import {MMKVLoader} from 'react-native-mmkv-storage'
-import {City} from '../../../packages/magen_common_ts/src/interfaces'
+import {City} from 'magen-common/src/interfaces'
 
 const api = axios.create({baseURL: Config.API_URL})
 

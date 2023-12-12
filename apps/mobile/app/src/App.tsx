@@ -1,9 +1,6 @@
 import React from 'react'
-import {Text, View, Button} from 'react-native'
-import LocationSvg from './assets/location.svg'
 import notifee from '@notifee/react-native'
-import CityFilter from './components/CityFilter'
-
+import CityFilter from './components/CityFilter1'
 // import {OrefUpdate} from '../../../packages/magen_common_ts/src/interfaces'
 
 async function onDisplayNotification() {
@@ -35,17 +32,7 @@ async function onDisplayNotification() {
 
 function App(): JSX.Element {
   return (
-    <View>
       <CityFilter />
-      <Text>hello</Text>
-      <LocationSvg width={100} height={100} />
-      <Button
-        title="display notification"
-        onPress={() => {
-          onDisplayNotification()
-        }}
-      />
-    </View>
   )
 }
 
