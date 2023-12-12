@@ -39,14 +39,24 @@ jobs:
           node-version: 18
           cache: 'npm'
           cache-dependency-path: 'apps/web/package-lock.json'
+          
+      - name: Install magen-common dependencies
+        run: npm install
+        working-directory: ./apps/packages/megen-common
+
+
       - name: Install dependencies
         run: npm install
+
+
       - name: Build
         run: npm run build
         env:
           VITE_WS_URL: ${{ secrets.VITE_WS_URL }}
           VITE_MAP_TILE_URL: ${{ secrets.VITE_MAP_TILE_URL }}
           VITE_MAP_SUBDOMAINS: ${{ secrets.VITE_MAP_SUBDOMAINS }}
+
+
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
