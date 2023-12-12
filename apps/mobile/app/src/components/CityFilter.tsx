@@ -1,5 +1,3 @@
-import { Circle, Input, ListItem, ScrollView, Square, Text, View, XStack, ZStack, createSelectItemParentScope } from "tamagui"
-import { Button } from 'tamagui'
 import {
   citiesJson,
   pointInPolygon,
@@ -10,9 +8,7 @@ import {
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { MMKVLoader } from 'react-native-mmkv-storage'
 import { useEffect, useState } from "react"
-import { Keyboard } from "react-native"
-import { X } from "@tamagui/lucide-icons"
-import { useToastController } from "@tamagui/toast"
+import { Keyboard, View } from "react-native"
 
 const citiesArray = Object.values(citiesJson)
 const storage = new MMKVLoader().initialize()
@@ -20,12 +16,10 @@ const storage = new MMKVLoader().initialize()
 export default function CityFilter() {
   const [searchValue, setSearchValue] = useState('')
   const [filters, setFilters] = useMMKVStorage<interfaces.City[]>('filters', storage, [])
-  const toast = useToastController()
   const found = searchValue.length > 1 ? citiesArray.filter(c => c.he.includes(searchValue) && !filters.includes(c)) : []
 
   function addCity(city: interfaces.City) {
     console.log('calling toast show')
-    toast.show(`העיר נוספה בהצלחה ויתקבלו התראות`, { duration: 3000 })
     console.log('adding city', city)
     setFilters([...filters, city])
     setSearchValue('')

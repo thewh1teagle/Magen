@@ -1,10 +1,10 @@
-import { Button, Text, View } from "tamagui";
+import { Text, View } from "react-native";
 import CityFilter from "../components/CityFilter";
 
 export default function Home() {
     return (
-        <View h='100%' w='100%' backgroundColor='$blue1'>
-        <Text fontSize='$4' textAlign='center' marginTop='$5' color=''>בחר ישוב</Text>
+        <View className="h-[100vh] w-[100vw] bg-blue-500">
+        <Text className="text-lg text-center mt-5">בחר ישוב</Text>
         <CityFilter />
       </View>
     )
