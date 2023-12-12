@@ -1,6 +1,6 @@
 import { MongoClient, ServerApiVersion } from 'mongodb'
 import * as config from './config'
-import { LatLng } from '../../../packages/magen_common_ts/src/interfaces';
+import { LatLng } from '../../../packages/magen-common/src/interfaces';
 
 const client = new MongoClient(
     config.databaseURL,

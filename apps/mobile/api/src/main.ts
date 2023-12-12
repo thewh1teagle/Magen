@@ -1,7 +1,7 @@
 import {parseAlerts, socket} from './ws'
 import fastify, {type FastifyInstance} from 'fastify'
 import * as config from './config'
-import { ActiveAlert, LatLng, OrefUpdate } from '../../../packages/magen_common_ts/src/interfaces'
+import { ActiveAlert, LatLng, OrefUpdate } from '../../../packages/magen-common/src/interfaces'
 import cors from '@fastify/cors'
 import userRoute from './routes/user'
 import db_connector from './db_connector'

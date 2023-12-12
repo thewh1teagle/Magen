@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { citiesJson, pointInPolygon, polygonsJson } from "../../../packages/magen_common_ts/src/lib";
+import { citiesJson, pointInPolygon, polygonsJson } from "../../../packages/magen-common/src/lib";
 import { useAlerts } from "../hooks/useAlerts";
 
 const citiesArray = Object.values(citiesJson);

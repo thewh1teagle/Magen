@@ -1,5 +1,5 @@
 {
-  "name": "static_map",
+  "name": "@magen/static-map",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

@@ -1,5 +1,5 @@
 {
-  "name": "magen-common",
+  "name": "@magen/common",
   "version": "1.0.0",
   "description": "",
   "main": "dist/lib.js",

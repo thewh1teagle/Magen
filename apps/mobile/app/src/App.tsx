@@ -1,7 +1,6 @@
 import React from 'react'
 import notifee from '@notifee/react-native'
-import CityFilter from './components/CityFilter1'
-// import {OrefUpdate} from '../../../packages/magen_common_ts/src/interfaces'
+import CityFilter from './components/CityFilter'
 import config from './tamagui.config'
 import { TamaguiProvider, Text, View } from 'tamagui'
 import Home from './Home'

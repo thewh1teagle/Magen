@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { OrefUpdate } from "../../packages/magen_common_ts/src/interfaces";
+import { OrefUpdate } from "../../packages/magen-common/src/interfaces";
 import { sendAlerts } from "./bot";
 import * as config from "./config";
 import { getAlerts, logger } from "./utils";

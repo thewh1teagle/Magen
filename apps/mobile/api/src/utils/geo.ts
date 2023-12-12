@@ -1,6 +1,6 @@
 import { type FastifyInstance } from 'fastify';
 import { Collection, Filter } from 'mongodb';
-import { ActiveAlert } from '../../../../packages/magen_common_ts/src/interfaces';
+import { ActiveAlert } from '../../../../packages/magen-common/src/interfaces';
 import {User} from '../interfaces'
 
 export async function findUsers(app: FastifyInstance, alerts: Array<ActiveAlert>): Promise<User[] | undefined> {

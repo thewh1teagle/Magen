@@ -22,7 +22,7 @@
     "@tamagui/themes": "^1.79.10",
     "@tamagui/toast": "^1.79.10",
     "axios": "^1.6.2",
-    "magen-common": "file:../../packages/magen-common",
+    "@magen/common": "file:../../packages/magen-common",
     "react": "18.2.0",
     "react-native": "0.72.7",
     "react-native-config": "^1.5.1",

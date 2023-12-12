@@ -1,7 +1,7 @@
 import WebSocket from "ws";
 import * as config from "./config";
-import { citiesJson, polygonsJson, threatsJson } from "../../../packages/magen_common_ts/src/lib";
-import { ActiveAlert, OrefUpdate } from "../../../packages/magen_common_ts/src/interfaces";
+import { citiesJson, polygonsJson, threatsJson } from "../../../packages/magen-common/src/lib";
+import { ActiveAlert, OrefUpdate } from "../../../packages/magen-common/src/interfaces";
 import { findUsers } from "./utils/geo";
 import { FastifyInstance } from "fastify";
 import { sendPush } from "./firebase";

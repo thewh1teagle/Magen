@@ -36,7 +36,7 @@ RUN npm install --only=production
 
 
 
-COPY packages/static_map/src/assets /usr/src/packages/static_map/src/assets
+COPY packages/static-map/src/assets /usr/src/packages/static-map/src/assets
 COPY --from=builder /usr/src/telegram_bot/build ./
 
 ENTRYPOINT ["node","telegram_bot/src/main.js"]

@@ -2,11 +2,11 @@ import pino from "pino";
 import {
   ActiveAlert,
   OrefUpdate,
-} from "../../packages/magen_common_ts/src/interfaces";
+} from "../../packages/magen-common/src/interfaces";
 import {
   citiesJson,
   threatsJson,
-} from "../../packages/magen_common_ts/src/lib";
+} from "../../packages/magen-common/src/lib";
 import * as config from "./config";
 
 export function getAlerts(update: OrefUpdate): ActiveAlert[] {

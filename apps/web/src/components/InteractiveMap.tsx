@@ -4,7 +4,7 @@ import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, Polygon, TileLayer } from "react-leaflet";
 import { useAlerts } from "../hooks/useAlerts";
-import { polygonsJson } from "../../../packages/magen_common_ts/src/lib";
+import { polygonsJson } from "../../../packages/magen-common/src/lib";
 
 // fix leaflet icon loading
 const DefaultIcon = L.icon({

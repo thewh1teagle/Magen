@@ -1,10 +1,10 @@
 import { format } from "date-fns";
 import { Bot, InputFile } from "grammy";
-import { Area } from "../../packages/magen_common_ts/src/interfaces";
-import { areasJson, citiesJson } from "../../packages/magen_common_ts/src/lib";
+import { Area } from "../../packages/magen-common/src/interfaces";
+import { areasJson, citiesJson } from "../../packages/magen-common/src/lib";
 import * as config from "./config";
 import { ActiveAlert } from "./src/interfaces";
-import { getAlertsImage } from "../../packages/static_map/src/lib";
+import { getAlertsImage } from "../../packages/static-map/src/lib";
 
 const bot = new Bot(config.botToken!);
 

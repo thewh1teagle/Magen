@@ -5,7 +5,7 @@ import {
   pointInPolygon,
   polygonsJson,
   interfaces
-} from 'magen-common'
+} from '@magen/common'
 
 
 
