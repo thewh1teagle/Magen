@@ -1,5 +1,5 @@
 export interface User {
     id: string;
-    cities: string[]; // cities ids
+    cities: number[]; // cities ids
     fcm_token: string;
   }

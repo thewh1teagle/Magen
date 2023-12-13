@@ -31,10 +31,10 @@ export function startListen(app: FastifyInstance) {
     let users = await findUsers(app, alerts);
     users = users?.filter(u => u.fcm_token !== undefined && u.fcm_token !== null)
     
-    const citiesIds = JSON.stringify(alerts.map(a => a.city?.id).flatMap(id => id ? [id.toString()] : []))
+    const citiesIds = JSON.stringify(alerts.map(a => a.city?.id).flatMap(id => id ? [id] : []))
     if (citiesIds.length > 0 && users && users?.length > 0) {
-      console.log('sending to ', users)
-      console.log(citiesIds);
+      // console.log('sending to ', users)
+      // console.log(citiesIds);
       sendPush({
         token: users?.map((u) => u.fcm_token),
         data: {ids: citiesIds, threat: update.category},

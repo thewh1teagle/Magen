@@ -8,7 +8,8 @@ export async function findUsers(app: FastifyInstance, alerts: Array<ActiveAlert>
   try {
     // Get a reference to the MongoDB 'users' collection
     // Extract city IDs from the alerts
-    const citiesIds = alerts.map(a => a.city?.id).flatMap(id => id ? [id.toString()] : [])
+    const citiesIds = alerts.map(a => a.city?.id).flatMap(id => id ? [id] : [])
+    citiesIds.push(0) // everywhere in Israel
 
     // Find users whose cities match any of the given IDs
     const found = await users.find({ cities: { $in: citiesIds } }).toArray();

@@ -11,13 +11,15 @@ export default async function routes (app: FastifyInstance, options: object) {
 
     app.post<{ Body: RegisterBody }>('/create', async (req, res) => {
     
+        
         // Define the filter to find the document by fcm_token
         const filter = { fcm_token: req.body.fcm_token };
+        console.log('create user ', req.body)
     
         // Define the update operation
         const update = {
             $set: {
-                cities: req.body.cities,
+                cities: req.body.cities.map(c => c),
                 fcm_token: req.body.fcm_token
             }
         };

@@ -12,9 +12,11 @@ import { Keyboard, ScrollView, Text, TextInput, TouchableOpacity, View } from "r
 import Xmark from '../assets/x.svg'
 import Button from './Button'
 import Input from './Input'
-
+import { storage } from '../App'
+import * as api from '../api'
 const citiesArray = Object.values(citiesJson)
-const storage = new MMKVLoader().initialize()
+citiesArray.push({ar: "", area: 0, countdown: 60, en: "", es: "", he: "כל הארץ", id: 0, lat: 0, lng: 0, ru: ""})
+
 
 export default function CityFilter() {
   const [searchValue, setSearchValue] = useState('')
@@ -33,6 +35,15 @@ export default function CityFilter() {
     console.log('adding city', city)
     setFilters(filters.filter(f => f.id !== city.id))
   }
+
+  useEffect(() => {
+    async function onChange() {
+      console.log('on change called')
+      const token = await storage.getString('token')
+      await api.register(token, filters)
+    }
+    onChange()
+  }, [filters])
   console.log('found => ', found)
   return (
     <View>
