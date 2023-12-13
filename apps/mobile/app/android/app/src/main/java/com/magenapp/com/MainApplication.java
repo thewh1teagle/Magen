@@ -1,4 +1,4 @@
-package com.app;
+package com.magenapp.com;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
