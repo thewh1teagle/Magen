@@ -8,7 +8,10 @@ import {
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { MMKVLoader } from 'react-native-mmkv-storage'
 import { useEffect, useState } from "react"
-import { Keyboard, View } from "react-native"
+import { Keyboard, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native"
+import Xmark from '../assets/x.svg'
+import Button from './Button'
+import Input from './Input'
 
 const citiesArray = Object.values(citiesJson)
 const storage = new MMKVLoader().initialize()
@@ -30,43 +33,44 @@ export default function CityFilter() {
     console.log('adding city', city)
     setFilters(filters.filter(f => f.id !== city.id))
   }
-
+  console.log('found => ', found)
   return (
     <View>
-      <View marginTop='$5' paddingHorizontal='$2' position="relative" w='100%' display="flex" justifyContent="center" alignItems="center">
+      <View className='mt-5 px-2 relative w-full flex justify-center items-center'>
 
-        <Input value={searchValue} onChangeText={setSearchValue} direction="rtl" textAlign="right" placeholder="ישוב" w='100%' />
-        <ZStack w='100%'>
-
+        <Input value={searchValue} onChangeText={setSearchValue} className='w-full' placeholder="ישוב" />
+        <View className='w-[100%]'>
           {filters.length === 0 && (
-            <View display="flex" flexDirection="row" gap='$2' flexWrap="wrap" marginTop='$3' justifyContent="center">
-              <Text fontSize='$3' opacity={0.4} textAlign="center">נא לבחור ישוב</Text>
+            <View className='flex flex-row gap-2 flex-wrap mt-3 justify-center'>
+              <Text className='text-2xl opacity-40 text-center'>נא לבחור ישוב</Text>
             </View>
           )}
-          <View display="flex" flexDirection="row" gap='$2' flexWrap="wrap" marginTop='$3'>
+          <View className='flex flex-row gap-2 flex-wrap mt-3'>
             {filters.map(f => (
-              <View key={f.id} minWidth='$8' minHeight='$3' paddingHorizontal='$2' display="flex" borderRadius='$3' alignItems="center" alignContent="space-around" backgroundColor='$blue1' flexDirection="row" justifyContent="space-between">
-                <X size={18} onPress={() => removeCity(f)} />
-                <Text fontSize='$3'>{f.he}</Text>
+              <View key={f.id} className='min-w-[8] min-h-[3] px-4 py-2 flex rounded-2xl align-middle bg-light-neutral  flex-row items-center'>
+                <Xmark className='' width={20} height={20} onPress={() => removeCity(f)} />
+                <Text className='ml-2 text-md text-light-neutral-content'>{f.he}</Text>
               </View>
             ))}
           </View>
           {
             found.length > 0 && (
-              <View shadowColor='#ddd' shadowOffset={{ width: 0, height: 2 }} shadowOpacity={0.3} shadowRadius={4} height='$16' maxHeight='$16' top='100%' position="absolute" w='100%'>
-                <ScrollView keyboardShouldPersistTaps='handled' display="flex" flexDirection="column" w='100%'   borderBottomLeftRadius='$4' borderBottomRightRadius='$4'>
+              <ScrollView keyboardShouldPersistTaps='handled' className='flex flex-col w-[100%] max-h-[200] absolute top-[0] bg-light-neutral text-light-neutral-content z-10 rounded-b-lg rounded-t-sm overflow-y-auto'>
+                <View className='flex flex-col'>
                   {found.map(c => (
-                    <ListItem onPress={() => addCity(c)} key={c.id}>
-                      <Text>{c.he}</Text>
-                    </ListItem>
+                    <View key={c.id}>
+                      <TouchableOpacity key={c.id} onPress={() => addCity(c)}>
+                        <Text className='m-2'>{c.he}</Text>
+                      </TouchableOpacity>
+                      <View className='w-full h-[0.4] bg-light-base-300' />
+                    </View>
                   ))}
-                </ScrollView>
-
-              </View>
+                </View>
+              </ScrollView>
             )
           }
-          
-        </ZStack>
+
+        </View>
 
       </View>
 

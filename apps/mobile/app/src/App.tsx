@@ -4,7 +4,7 @@ import CityFilter from './components/CityFilter'
 import HomeScreen from './screens/Home'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-
+import { I18nManager } from 'react-native'
 
 async function onDisplayNotification() {
   // Request permissions (required for iOS)
@@ -35,11 +35,14 @@ async function onDisplayNotification() {
 
 const Stack = createNativeStackNavigator();
 
+I18nManager.forceRTL(true)
 
 function App(): JSX.Element {
+
+  
   return (
     <NavigationContainer>
-          <Stack.Navigator initialRouteName='home'>
+          <Stack.Navigator initialRouteName='home' screenOptions={{headerShown: false}}>
             <Stack.Screen
               name="home"
               component={HomeScreen}
