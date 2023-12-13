@@ -35,3 +35,10 @@ Rust based `ws` server which emits new alerts from pikud haoref
 `NodeJS` based telegram bot which sends live alerts to public channel along with dynamic map image
 
 - [telegram-bot](https://github.com/thewh1teagle/Magen/tree/main/apps/telegram_bot)
+
+
+# Build Containers
+```shell
+~/api docker compose -f docker-compose.dev.yaml build api
+~/api docker compose -f docker-compose.dev.yaml push
+``````

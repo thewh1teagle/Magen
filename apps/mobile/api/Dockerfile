@@ -8,6 +8,10 @@ COPY mobile/api/package.json /usr/src/mobile/api/package.json
 WORKDIR /usr/src/mobile/api
 RUN npm install
 
+# Install magen common
+COPY packages/magen-common/package.json /usr/src/packages/magen-common/package.json
+WORKDIR /usr/src/packages/magen-common
+RUN npm install
 
 # for build
 FROM base as builder
