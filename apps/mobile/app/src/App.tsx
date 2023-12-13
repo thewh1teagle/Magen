@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import notifee from '@notifee/react-native'
 import CityFilter from './components/CityFilter'
 import HomeScreen from './screens/Home'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { I18nManager } from 'react-native'
+import messaging from '@react-native-firebase/messaging';
 
-async function onDisplayNotification() {
+
+async function onMessageReceived() {
   // Request permissions (required for iOS)
   await notifee.requestPermission()
 
@@ -33,13 +35,31 @@ async function onDisplayNotification() {
   })
 }
 
+
+async function onAppBootstrap() {
+  console.log('Bootstraping app...')
+  // Register the device with FCM
+  await messaging().registerDeviceForRemoteMessages();
+
+  // Get the token
+  const token = await messaging().getToken();
+  console.log('fcm token is ', token)
+  // Save the token
+  // await postToApi('/users/1234/tokens', { token });
+  messaging().onMessage(onMessageReceived)
+  messaging().setBackgroundMessageHandler(onMessageReceived)
+}
+
+
 const Stack = createNativeStackNavigator();
 
 I18nManager.forceRTL(true)
 
 function App(): JSX.Element {
 
-  
+  useEffect(() => {
+    onAppBootstrap()
+  }, [])
   return (
     <NavigationContainer>
           <Stack.Navigator initialRouteName='home' screenOptions={{headerShown: false}}>

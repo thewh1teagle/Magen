@@ -47,9 +47,9 @@ export default function CityFilter() {
           )}
           <View className='flex flex-row gap-2 flex-wrap mt-3'>
             {filters.map(f => (
-              <View key={f.id} className='min-w-[8] min-h-[3] px-4 py-2 flex rounded-2xl align-middle bg-light-neutral  flex-row items-center'>
+              <View key={f.id} className='min-w-[8] min-h-[3] px-4 py-2 flex rounded-2xl align-middle bg-light-base-300  flex-row items-center'>
                 <Xmark className='' width={20} height={20} onPress={() => removeCity(f)} />
-                <Text className='ml-2 text-md text-light-neutral-content'>{f.he}</Text>
+                <Text className='ml-2 text-md text-light-base-content'>{f.he}</Text>
               </View>
             ))}
           </View>

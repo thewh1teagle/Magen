@@ -11,7 +11,7 @@ export default function Input(props: InputProps) {
 
     return (
         <TouchableWithoutFeedback className="absolute w-[100vw] h-[100vh]" onPressOut={() => console.log('touchable without fire')}>
-        <TextInput placeholderTextColor='#AAAAAA' caretHidden={carretHidden} className="bg-transparent border border-spacing-1 rounded-2xl text-light-neutral py-3 text-sm h-[48px] px-[16px]" {...props} 
+        <TextInput placeholderTextColor='#AAAAAA' caretHidden={carretHidden} className="bg-transparent border-gray-300 border border-spacing-1 rounded-2xl text-light-neutral py-3 text-sm h-[48px] px-[16px]" {...props} 
         />
         </TouchableWithoutFeedback>
 
