@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import notifee from '@notifee/react-native'
-import CityFilter from './components/CityFilter'
+import CityFilter, { citiesArray } from './components/CityFilter'
 import HomeScreen from './screens/Home'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -21,9 +21,14 @@ interface Update {
 }
 
 async function parseUpdate(rawUpdate: FcmUpdate, filters: City[]) {
-  const cities = filters.filter(f => rawUpdate.ids.includes(f.id))
   const threat: interfaces.Threat | undefined = threatsJson?.[rawUpdate.threat]
-  return {cities, threat}
+  if (filters.some(f => f.id === 0)) { // everywhere is set, fetch names
+    const cities = citiesArray.filter(c => rawUpdate.ids.includes(c.id) && c.id !== 0) // need to use hash table in future
+    return {cities, threat}
+  } else {
+    const cities = filters.filter(f => rawUpdate.ids.includes(f.id))
+    return {cities, threat}
+  }
 }
 
 async function onMessageReceived(message: FirebaseMessagingTypes.RemoteMessage) {

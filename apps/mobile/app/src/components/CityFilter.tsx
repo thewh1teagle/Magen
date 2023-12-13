@@ -14,7 +14,8 @@ import Button from './Button'
 import Input from './Input'
 import { storage } from '../App'
 import * as api from '../api'
-const citiesArray = Object.values(citiesJson)
+
+export const citiesArray = Object.values(citiesJson)
 citiesArray.push({ar: "", area: 0, countdown: 60, en: "", es: "", he: "כל הארץ", id: 0, lat: 0, lng: 0, ru: ""})
 
 
