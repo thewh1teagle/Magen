@@ -1,5 +1,4 @@
-
-use oref::Client;
+use pikud::Client;
 use tokio::time::{sleep, Duration};
 
 #[tokio::main]

@@ -626,24 +626,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
 
 [[package]]
-name = "magen_srv"
-version = "0.1.0"
-dependencies = [
- "clap",
- "ctrlc",
- "futures-util",
- "humantime",
- "log",
- "oref",
- "pretty_env_logger",
- "serde_json",
- "tokio",
- "tokio-stream",
- "uuid",
- "warp",
-]
-
-[[package]]
 name = "memchr"
 version = "2.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -802,7 +784,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "oref"
+name = "percent-encoding"
+version = "2.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9b2a4787296e9989611394c33f193f676704af1686e70b8f8033ab5ba9a35a94"
+
+[[package]]
+name = "pikud"
 version = "0.1.0"
 dependencies = [
  "log",
@@ -813,12 +801,6 @@ dependencies = [
  "tokio",
  "uuid",
 ]
-
-[[package]]
-name = "percent-encoding"
-version = "2.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9b2a4787296e9989611394c33f193f676704af1686e70b8f8033ab5ba9a35a94"
 
 [[package]]
 name = "pin-project"
@@ -1158,6 +1140,24 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
+]
+
+[[package]]
+name = "server"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "ctrlc",
+ "futures-util",
+ "humantime",
+ "log",
+ "pikud",
+ "pretty_env_logger",
+ "serde_json",
+ "tokio",
+ "tokio-stream",
+ "uuid",
+ "warp",
 ]
 
 [[package]]

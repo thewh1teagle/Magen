@@ -1,10 +1,10 @@
 [package]
-name = "oref"
+name = "pikud"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "oref"
+name = "pikud"
 path = "src/lib.rs"
 
 [[bin]]

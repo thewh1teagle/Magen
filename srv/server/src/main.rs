@@ -1,4 +1,4 @@
-use oref;
+use pikud;
 use clap::Parser;
 use ctrlc;
 use futures_util::{SinkExt, StreamExt, TryFutureExt};
@@ -82,11 +82,11 @@ async fn main() {
     // is a websocket sender.
     let users = Users::default();
 
-    let client: Arc<Mutex<oref::Client>>;
+    let client: Arc<Mutex<pikud::Client>>;
     if args.mock {
-        client = Arc::new(Mutex::new(oref::Client::new_mock()));
+        client = Arc::new(Mutex::new(pikud::Client::new_mock()));
     } else {
-        client = Arc::new(Mutex::new(oref::Client::new()));
+        client = Arc::new(Mutex::new(pikud::Client::new()));
     }
     
     
@@ -139,7 +139,7 @@ async fn main() {
     
 }
 
-async fn user_connected(ws: WebSocket, users: Users, client: Arc<Mutex<oref::Client>>) {
+async fn user_connected(ws: WebSocket, users: Users, client: Arc<Mutex<pikud::Client>>) {
     // Use a counter to assign a new unique ID for this user.
     let my_id = NEXT_USER_ID.fetch_add(1, Ordering::Relaxed);
 
@@ -215,7 +215,7 @@ async fn send_ping(users: Users, interval: Duration) {
 
 async fn alert_notify_thread(
     users: Users,
-    client: Arc<Mutex<oref::Client>>,
+    client: Arc<Mutex<pikud::Client>>,
     interval: Duration
 ) -> Result<(), Box<dyn std::error::Error + Send>> {
     loop {
