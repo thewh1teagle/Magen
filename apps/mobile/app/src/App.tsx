@@ -48,9 +48,10 @@ async function onMessageReceived(message: FirebaseMessagingTypes.RemoteMessage) 
 
   // Display a notification
   await notifee.displayNotification({
-    title: `<p style="color: red;"><b>🔴 ${update.threat.he}</span></p></b></p>`,
+    title: `<p style="color: red;"><b>${update.threat.he}</span></p></b></p>`,
     body: `<p style="">${update.cities.map(c => c.he).join(', ')}</i></p>`,
     android: {
+      largeIcon: require('./assets/logo.png'),
       channelId,
       color: 'red',
       actions: [
@@ -89,6 +90,7 @@ async function onAppBootstrap() {
   // await postToApi('/users/1234/tokens', { token });
   messaging().onMessage(onMessageReceived)
   messaging().setBackgroundMessageHandler(onMessageReceived)
+  notifee.onBackgroundEvent(async (_) => {}) // just to remove the warning we already handle it
 }
 
 
