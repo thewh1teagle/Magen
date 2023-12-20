@@ -43,7 +43,7 @@ pub struct Args {
 
 #[tokio::main]
 async fn main() {
-    let args: Args = Args::parse();
+    let args = Args::parse();
     pretty_env_logger::init();
     ctrlc::set_handler(move || 
         std::process::exit(0)
