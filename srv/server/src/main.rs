@@ -38,7 +38,11 @@ pub struct Args {
 
     #[clap(long, default_value = "1s")]
     /// Interval for quering new update.
-    interval: humantime::Duration
+    interval: humantime::Duration,
+
+    #[clap(long, default_value = "/ws")]
+    /// The ws path to bind to.
+    ws_path: String,
 }
 
 #[tokio::main]
