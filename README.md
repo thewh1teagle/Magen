@@ -42,3 +42,9 @@ Rust based `ws` server which emits new alerts from pikud haoref
 ~/api docker compose -f docker-compose.dev.yaml build api
 ~/api docker compose -f docker-compose.dev.yaml push
 ``````
+
+
+# Test
+```
+websocat -k wss://oref-rs.duckdns.org/ws_mock
+```
