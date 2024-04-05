@@ -1,10 +1,10 @@
 import WebSocket from "ws";
-import * as config from "./config";
-import { citiesJson, polygonsJson, threatsJson } from "../../../packages/magen-common/src/lib";
-import { ActiveAlert, OrefUpdate } from "../../../packages/magen-common/src/interfaces";
-import { findUsers } from "./utils/geo";
+import * as config from "../config";
+import { findUsers } from "./geo";
 import { FastifyInstance } from "fastify";
 import { sendPush } from "./firebase";
+import { ActiveAlert, OrefUpdate } from "@magen/common/src/interfaces";
+import { citiesJson, polygonsJson, threatsJson } from "@magen/common";
 
 export const socket = new WebSocket(config.wsURL, {
   perMessageDeflate: false,
@@ -28,7 +28,7 @@ export function startListen(app: FastifyInstance) {
   socket.addEventListener("message", async (message) => {
     const update = JSON.parse(message.data as string) as OrefUpdate;
     const alerts = parseAlerts(update);
-    let users = await findUsers(app, alerts);
+    let users = await findUsers(alerts);
     users = users?.filter(u => u.fcm_token !== undefined && u.fcm_token !== null)
     
     const citiesIds = JSON.stringify(alerts.map(a => a.city?.id).flatMap(id => id ? [id] : []))

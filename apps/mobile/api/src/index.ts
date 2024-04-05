@@ -1,18 +1,11 @@
-import {parseAlerts, socket} from './ws'
-import fastify, {type FastifyInstance} from 'fastify'
+import fastify from 'fastify'
 import * as config from './config'
-import { ActiveAlert, LatLng, OrefUpdate } from '../../../packages/magen-common/src/interfaces'
 import cors from '@fastify/cors'
 import userRoute from './routes/user'
-import db_connector from './db_connector'
-import * as wsClient from './ws'
-import { Collection, Filter } from 'mongodb'
-import { findUsers } from './utils/geo'
-import { sendPush } from './firebase'
+import * as wsClient from './utils/alerts'
 
 
 export const app = fastify({logger: {}})
-app.register(db_connector)
 app.register(cors, {origin: "*", allowedHeaders: "*", methods: "*"})
 app.register(userRoute, {prefix: '/api/user'})
 

@@ -1,18 +1,17 @@
-import { type FastifyInstance } from 'fastify';
-import { Collection, Filter } from 'mongodb';
-import { ActiveAlert } from '../../../../packages/magen-common/src/interfaces';
-import {User} from '../interfaces'
+import { ActiveAlert } from '@magen/common/src/interfaces';
+import { PrismaClient, User } from '@prisma/client'
 
-export async function findUsers(app: FastifyInstance, alerts: Array<ActiveAlert>): Promise<User[] | undefined> {
-  const users: Collection<User> = app!.mongo!.db!.collection('users');
+const prisma = new PrismaClient()
+
+export async function findUsers(alerts: Array<ActiveAlert>): Promise<User[] | undefined> {
   try {
     // Get a reference to the MongoDB 'users' collection
     // Extract city IDs from the alerts
-    const citiesIds = alerts.map(a => a.city?.id).flatMap(id => id ? [id] : [])
-    citiesIds.push(0) // everywhere in Israel
+    const citiesIds = alerts.map(a => a.city?.id).flatMap(id => String(id) ? [String(id)] : [])
+    citiesIds.push("0") // everywhere in Israel
 
     // Find users whose cities match any of the given IDs
-    const found = await users.find({ cities: { $in: citiesIds } }).toArray();
+    const found = await prisma.user.findMany({where: {cities: {hasSome: citiesIds}}})
 
     return found;
   } catch (e) {

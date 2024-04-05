@@ -1,19 +1,15 @@
 import {FastifyInstance} from 'fastify'
-import { LatLng } from '../../../../packages/magen-common/src/interfaces'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export default async function routes (app: FastifyInstance, options: object) {
-    const collection = app!.mongo!.db!.collection('users')
-
+    
     interface RegisterBody {
         cities: string[]
         fcm_token: string
     }
-
     app.post<{ Body: RegisterBody }>('/create', async (req, res) => {
-    
-        
-        // Define the filter to find the document by fcm_token
-        const filter = { fcm_token: req.body.fcm_token };
         console.log('create user ', req.body)
     
         // Define the update operation
@@ -22,34 +18,26 @@ export default async function routes (app: FastifyInstance, options: object) {
                 cities: req.body.cities.map(c => c),
                 fcm_token: req.body.fcm_token
             }
-        };
-    
-        // Specify the upsert option to insert if not found
-        const options = { upsert: true };
-    
+        };    
         // Use updateOne to perform the upsert
-        const result = await collection.updateOne(filter, update, options);
+        await prisma.user.create({data: {
+            fcm_token: req.body.fcm_token,
+            cities: req.body.cities.map(c => c),
+        }})
     
-        if (result.upsertedCount > 0) {
-            // If a new document was inserted, return a success message
-            return { message: 'User created successfully' };
-        } else {
-            // If an existing document was updated, return an appropriate response
-            return { message: 'User updated successfully' };
-        }
+        console.log('user created successfuly')
+        return {status: 'ok'}
     });     
     
     interface UpdateBody extends RegisterBody {
         id: string
     }
     app.post<{Body: UpdateBody}>('/update', async (req, res) => {
-        const id = new app.mongo.ObjectId(req.body.id)
-        return await collection.updateOne(
-            {_id: id}, 
-            {"$set": {
-                cities: req.body.cities,
-                fcm_token: req.body.fcm_token
-            }}
-        )
+        const id = req.body.id
+        await prisma.user.update({where: {id}, data: {
+            cities: req.body.cities,
+            fcm_token: req.body.fcm_token
+        }})
+        return {status: 'ok'}
     })
 }

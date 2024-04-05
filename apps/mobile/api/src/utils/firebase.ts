@@ -1,12 +1,10 @@
 
 
-import * as config from './config'
+import * as config from '../config'
 import { initializeApp, cert } from "firebase-admin/app";
 import { getMessaging } from "firebase-admin/messaging";
 import * as admin from 'firebase-admin'
 
-
-  
 const app = initializeApp({credential: admin.credential.cert(config.serviceAccountPath)});
 const fcm = getMessaging()
 
