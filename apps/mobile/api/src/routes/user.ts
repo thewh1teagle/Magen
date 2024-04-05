@@ -17,19 +17,19 @@ export default async function routes (app: FastifyInstance, options: object) {
         const cities = req.body.cities.map(c => c)
         await prisma.user.upsert({where: {fcm_token}, create: {fcm_token, cities}, update: {fcm_token, cities}})
         console.log('user created successfuly')
-        return {status: 'updated'}
+        return {status: 'set'}
     });
 
-    interface RemoveBody {
+    interface UnsetBody {
         fcm_token: string
     }
-    app.post<{ Body: RemoveBody }>('/remove', async (req, res) => {
+    app.post<{ Body: UnsetBody }>('/unset', async (req, res) => {
         console.log('remove user ', req.body)
     
         // Use updateOne to perform the upsert
         const fcm_token = req.body.fcm_token
         await prisma.user.delete({where: {fcm_token}})
         console.log('user removed successfuly')
-        return {status: 'removed'}
+        return {status: 'unset'}
     });
 }
