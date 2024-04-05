@@ -11,5 +11,11 @@ class FirebaseAPI {
     FirebaseMessaging.onMessage.listen(onMessageReceived);
   }
 
-  Future<void> onMessageReceived(RemoteMessage message) async {}
+  Future<String?> getToken() async {
+    return await _messaging.getToken();
+  }
+
+  Future<void> onMessageReceived(RemoteMessage message) async {
+    print("received message ${message.data}");
+  }
 }

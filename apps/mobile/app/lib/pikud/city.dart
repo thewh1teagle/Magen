@@ -24,6 +24,7 @@ class City {
   });
 
   static City fromJSON(Map<String, dynamic> json) {
+    print("json is $json");
     return City(
       id: json['id'].toString(),
       he: json['he'],
@@ -33,8 +34,23 @@ class City {
       es: json['es'],
       area: json['area'],
       countdown: json['countdown'],
-      lat: json['lat'].toDouble(),
-      lng: json['lng'].toDouble(),
+      lat: json['lat']?.toDouble(),
+      lng: json['lng']?.toDouble(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'he': he,
+      'en': en,
+      'ru': ru,
+      'ar': ar,
+      'es': es,
+      'area': area,
+      'countdown': countdown,
+      'lat': lat,
+      'lng': lng,
+    };
   }
 }

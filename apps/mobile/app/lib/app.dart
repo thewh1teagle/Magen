@@ -17,10 +17,9 @@ class _AppState extends State<App> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      routes: {
-        '/': (context) => const HomeScreen(title: "Magen")
-      },
-      builder: (context, child) => Directionality(textDirection: TextDirection.rtl, child: child!),
+      routes: {'/': (context) => const HomeScreen(title: "Magen")},
+      builder: (context, child) =>
+          Directionality(textDirection: TextDirection.rtl, child: child!),
     );
   }
 }

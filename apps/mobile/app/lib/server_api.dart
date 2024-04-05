@@ -2,10 +2,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class API {
+class ServerAPI {
   late String baseURL;
 
-  API() {
+  ServerAPI() {
     baseURL = dotenv.env['SERVER_URL'] ?? '';
 
     if (baseURL.isEmpty) {

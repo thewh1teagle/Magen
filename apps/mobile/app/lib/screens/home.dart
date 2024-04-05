@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:magen/firebase_api.dart';
 import 'package:magen/pikud/cache.dart';
 import 'package:magen/pikud/city.dart';
+import 'package:magen/server_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -15,10 +20,23 @@ class _HomeScreenState extends State<HomeScreen> {
   List<City> selectedCities = [];
   final searchController = TextEditingController();
   List<City>? filteredCities;
+  late SharedPreferences prefs;
 
   Future<void> loadCities() async {
+    prefs = await SharedPreferences.getInstance();
     cities = await Cities().cities;
-    setState(() {}); // Update the UI after loading cities
+    var citiesListString = prefs.getString("cities");
+    if (citiesListString != null) {
+      List<dynamic> storedCitiesDynamic = json.decode(citiesListString);
+      List<City> storedCities =
+          storedCitiesDynamic.map((e) => City.fromJSON(e)).toList();
+      setState(() {
+        selectedCities = storedCities;
+      }); // Update the UI after loading cities
+
+      print("selecte cities is $storedCities");
+    }
+    setState(() {});
   }
 
   @override
@@ -28,18 +46,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void saveCities() async {
-    const snackBar = SnackBar(
-      content: Text('ישובים נשמרו בהצלחה!'),
-      duration: Duration(seconds: 1),
-    );
-
-    // Find the ScaffoldMessenger in the widget tree
-    // and use it to show a SnackBar.
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    var token = await FirebaseAPI().getToken();
+    if (token != null) {
+      ServerAPI().set(token, selectedCities.map((c) => c.id).toList());
+      const snackBar = SnackBar(
+        content: Text('ישובים נשמרו בהצלחה!'),
+        duration: Duration(seconds: 1),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      const snackBar = SnackBar(
+        content: Text('לא ניתן לקבל התראות!'),
+        duration: Duration(seconds: 1),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    filteredCities = cities?.values
+        .where((city) => city.he.contains(searchController.text))
+        .toList();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -62,14 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
-                  onChanged: (value) => {
-                    setState(() {
-                      filteredCities = cities?.values
-                          .where(
-                              (city) => city.he.contains(searchController.text))
-                          .toList();
-                    })
-                  },
+                  onChanged: (value) => {setState(() {})},
                   controller: searchController,
                   decoration: const InputDecoration(
                     hintText: 'חפש ישוב',
@@ -100,6 +121,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             } else {
                               selectedCities.remove(city);
                             }
+                            prefs.setString(
+                                "cities", json.encode(selectedCities));
                           })
                         },
                         value: selectedCities.contains(city),
