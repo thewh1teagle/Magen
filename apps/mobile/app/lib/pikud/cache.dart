@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/services.dart';
 import 'package:magen/pikud/city.dart';
 import 'package:magen/pikud/threat.dart';
