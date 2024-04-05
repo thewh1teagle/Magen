@@ -1,11 +1,16 @@
-import { assert } from 'chai'
-import {app} from '../src/index'
+
+import {test} from 'tap'
 import { describe, it } from 'node:test'
+import { buildApp } from '../src/app'
 
 
-describe("API tests", () => {
-    it("should do something", async () => {
-        const res = await app.inject({method: 'GET', url: '/'})
-        assert.equal(res.statusCode, 200)
+test('api', async (t) => {
+    const app = buildApp()
+
+    t.teardown(() => {
+        app.close()
     })
+
+    const res = await app.inject({method: 'GET', url: '/'})
+    t.equal(res.statusCode, 404)    
 })

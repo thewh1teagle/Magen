@@ -7,23 +7,19 @@
   "scripts": {
     "start": "tsc && node dist/index.js",
     "dev": "nodemon -w ./*.json -w src/**/*.ts -w .env --config nodemon.json -r dotenv/config src/index.ts",
-    "test": "tsc && mocha dist/tests/**/*.js",
+    "test": "tap",
     "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/chai": "^4.3.14",
-    "@types/mocha": "^10.0.6",
     "@types/node": "^20.12.4",
-    "@types/sinon": "^17.0.3",
+    "@types/tap": "^15.0.11",
     "@types/ws": "^8.5.8",
-    "chai": "^5.1.0",
-    "mocha": "^10.4.0",
     "nodemon": "^3.0.1",
     "prisma": "^5.12.1",
-    "sinon": "^17.0.1",
+    "tap": "^18.7.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.4"
   },
