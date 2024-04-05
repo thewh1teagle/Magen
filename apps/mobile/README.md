@@ -1,6 +1,13 @@
-# app
+# api
 
-Magen mobile app
+api for flutter mobile app
+
+
+# setup dev environment
+
+```console
+docker compose -f db-compose.yaml up
+```
 
 # TODO
 - [ ] Setup local notifications
