@@ -74,7 +74,7 @@ class Area {
 }
 
 Future<List<City>> loadCities() async {
-  var citiesStr = await rootBundle.loadString("../../packages/magen-common/src/assets/cities.json");
+  var citiesStr = await rootBundle.loadString("assets/cities.json");
   var citiesJSON = json.decode(citiesStr);
   List<dynamic> citiesArray = citiesJSON["cities"];
   List<City> cities = citiesArray.map((json) => City.fromJSON(json)).toList();
@@ -82,7 +82,7 @@ Future<List<City>> loadCities() async {
 }
 
 Future<Map<String, Threat>> loadThreats() async {
-  String threatsStr = await rootBundle.loadString("packages/magen-common/src/assets/threats.json");
+  String threatsStr = await rootBundle.loadString("assets/threats.json");
   Map<String, dynamic> threatsJSON = json.decode(threatsStr);
   
   Map<String, Threat> threatsMap = {};
