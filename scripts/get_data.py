@@ -1,5 +1,6 @@
 import requests
 from pathlib import Path
+import json
 
 CITIES_VER = 5
 POLY_VER = 3
@@ -19,17 +20,17 @@ headers = {
 def get_cities(version: int):
     response = requests.get(f'https://www.tzevaadom.co.il/static/cities.json?v={version}', headers=headers)
     response.raise_for_status()
-    return response.content
+    return response.json()
 
 def get_polygons(version: int):
     response = requests.get(f'https://www.tzevaadom.co.il/static/polygons.json?v={version}', headers=headers)
     response.raise_for_status()
-    return response.content
+    return response.json()
 
 if __name__ == '__main__':
     cities = get_cities(CITIES_VER)
     polygons = get_polygons(POLY_VER)
-    with CITIES_PATH.open('wb') as f:
-        f.write(cities)
-    with POLYGONS_PATH.open('wb') as f:
-        f.write(polygons)
+    with CITIES_PATH.open('wb', encoding='utf-8') as f:
+        json.dump(cities, f, indent=4, ensure_ascii=False)
+    with POLYGONS_PATH.open('wb', encoding='utf-8') as f:
+        json.dump(polygons, f, indent=4, ensure_ascii=False)
