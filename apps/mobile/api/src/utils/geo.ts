@@ -8,7 +8,11 @@ export async function findUsers(alerts: Array<ActiveAlert>): Promise<User[] | un
     // Get a reference to the MongoDB 'users' collection
     // Extract city IDs from the alerts
     const citiesIds = alerts.map(a => a.city?.id).flatMap(id => String(id) ? [String(id)] : [])
-    citiesIds.push("0") // everywhere in Israel
+
+    // if user set one city to 0
+    // it will take him always
+    // assume it's everywhere in Israel
+    citiesIds.push("0") 
 
     // Find users whose cities match any of the given IDs
     const found = await prisma.user.findMany({where: {cities: {hasSome: citiesIds}}})

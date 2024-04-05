@@ -6,7 +6,7 @@ export interface OrefUpdate {
 }
 
 export interface ActiveAlert {
-  name: string;
+  name: string; // city name
   timestamp: Date;
   city?: City
   threat?: Threat,

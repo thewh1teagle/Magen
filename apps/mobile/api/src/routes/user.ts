@@ -5,39 +5,31 @@ const prisma = new PrismaClient()
 
 export default async function routes (app: FastifyInstance, options: object) {
     
-    interface RegisterBody {
+    interface SetBody {
         cities: string[]
         fcm_token: string
     }
-    app.post<{ Body: RegisterBody }>('/create', async (req, res) => {
+    app.post<{ Body: SetBody }>('/set', async (req, res) => {
         console.log('create user ', req.body)
     
-        // Define the update operation
-        const update = {
-            $set: {
-                cities: req.body.cities.map(c => c),
-                fcm_token: req.body.fcm_token
-            }
-        };    
         // Use updateOne to perform the upsert
-        await prisma.user.create({data: {
-            fcm_token: req.body.fcm_token,
-            cities: req.body.cities.map(c => c),
-        }})
-    
+        const fcm_token = req.body.fcm_token
+        const cities = req.body.cities.map(c => c)
+        await prisma.user.upsert({where: {fcm_token}, create: {fcm_token, cities}, update: {fcm_token, cities}})
         console.log('user created successfuly')
-        return {status: 'ok'}
-    });     
-    
-    interface UpdateBody extends RegisterBody {
-        id: string
+        return {status: 'updated'}
+    });
+
+    interface RemoveBody {
+        fcm_token: string
     }
-    app.post<{Body: UpdateBody}>('/update', async (req, res) => {
-        const id = req.body.id
-        await prisma.user.update({where: {id}, data: {
-            cities: req.body.cities,
-            fcm_token: req.body.fcm_token
-        }})
-        return {status: 'ok'}
-    })
+    app.post<{ Body: RemoveBody }>('/remove', async (req, res) => {
+        console.log('remove user ', req.body)
+    
+        // Use updateOne to perform the upsert
+        const fcm_token = req.body.fcm_token
+        await prisma.user.delete({where: {fcm_token}})
+        console.log('user removed successfuly')
+        return {status: 'removed'}
+    });
 }

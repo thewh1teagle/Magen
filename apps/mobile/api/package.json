@@ -7,7 +7,10 @@
   "scripts": {
     "start": "tsc && node dist/index.js",
     "dev": "nodemon -w ./*.json -w src/**/*.ts -w .env --config nodemon.json -r dotenv/config src/index.ts",
-    "test": "tap",
+    "test": "tap -j1",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "prisma:studio": "prisma studio",
     "build": "tsc"
   },
   "keywords": [],
