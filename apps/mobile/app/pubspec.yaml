@@ -23,7 +23,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - ../../packages/magen-common/src/assets/cities.json
-    - ../../packages/magen-common/src/assets/polygons.json
-    - ../../packages/magen-common/src/assets/threats.json
+    - assets/cities.json
+    - assets/polygons.json
+    - assets/threats.json
     - .env
