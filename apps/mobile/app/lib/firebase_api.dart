@@ -11,7 +11,5 @@ class FirebaseAPI {
     FirebaseMessaging.onMessage.listen(onMessageReceived);
   }
 
-  Future<void> onMessageReceived(RemoteMessage message) async {
-
-  }
+  Future<void> onMessageReceived(RemoteMessage message) async {}
 }

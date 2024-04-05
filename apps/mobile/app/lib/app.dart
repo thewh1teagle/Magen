@@ -20,6 +20,7 @@ class _AppState extends State<App> {
       routes: {
         '/': (context) => const HomeScreen(title: "Magen")
       },
+      builder: (context, child) => Directionality(textDirection: TextDirection.rtl, child: child!),
     );
   }
 }

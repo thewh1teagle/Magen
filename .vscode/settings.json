@@ -4,5 +4,10 @@
             "mode": "auto"
         }
     ],
-    "nandorojo-tamagui.configPath": "apps\\mobile\\app\\src\\tamagui.config.ts"
+    "nandorojo-tamagui.configPath": "apps\\mobile\\app\\src\\tamagui.config.ts",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "always",
+        "source.organizeImports": "always"
+    }
 }

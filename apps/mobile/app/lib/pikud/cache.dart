@@ -18,7 +18,7 @@ class Threats {
   Future<Map<String, Threat>> _loadThreats() async {
     String threatsStr = await rootBundle.loadString("assets/threats.json");
     Map<String, dynamic> threatsJSON = json.decode(threatsStr);
-    
+
     Map<String, Threat> threatsMap = {};
 
     threatsJSON.forEach((key, value) {
@@ -36,7 +36,7 @@ class Threats {
 
 class Cities {
   static final Cities _instance = Cities._internal();
-  late Future<List<City>> _citiesFuture;
+  late Future<Map<String, City>> _citiesFuture;
 
   factory Cities() {
     return _instance;
@@ -46,15 +46,25 @@ class Cities {
     _citiesFuture = _loadCities();
   }
 
-  Future<List<City>> _loadCities() async {
+  Future<Map<String, City>> _loadCities() async {
     String citiesStr = await rootBundle.loadString("assets/cities.json");
     Map<String, dynamic> citiesJSON = json.decode(citiesStr);
-    List<dynamic> citiesArray = citiesJSON["cities"];
-    List<City> cities = citiesArray.map((json) => City.fromJSON(json)).toList();
+    Map<String, dynamic> citiesMap = citiesJSON["cities"];
+
+    Map<String, City> cities = {};
+
+
+    cities["כל הארץ"] = City(id: "0", he: "כל הארץ");
+    citiesMap.forEach((key, value) {
+      cities[key] = City.fromJSON(value);
+    });
+
+    
+
     return cities;
   }
 
-  Future<List<City>> get cities async {
+  Future<Map<String, City>> get cities async {
     return _citiesFuture;
   }
 }
