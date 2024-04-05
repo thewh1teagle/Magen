@@ -1,2 +1,0 @@
-# Magen mobile app
-
