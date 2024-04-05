@@ -36,7 +36,7 @@ export function startListen(app: FastifyInstance) {
       // console.log('sending to ', users)
       // console.log(citiesIds);
       sendPush({
-        token: users?.map((u) => u.fcm_token),
+        token: users?.map(u => u.fcm_token),
         data: {ids: citiesIds, threat: update.category},
       });
     }
