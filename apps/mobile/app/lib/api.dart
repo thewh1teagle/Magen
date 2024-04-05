@@ -13,6 +13,16 @@ class API {
     }
   }
 
+  Future<void> healthCheck() async {
+    final response = await http.get(
+      Uri.parse('$baseURL/api/healthcheck'),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to set data');
+    }
+  }
+
   Future<void> set(String fcmToken, List<String> cities) async {
     final response = await http.post(
       Uri.parse('$baseURL/api/user/set'),

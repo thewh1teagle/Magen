@@ -17,7 +17,7 @@ export default async function routes (app: FastifyInstance, options: object) {
         const cities = req.body.cities.map(c => c)
         await prisma.user.upsert({where: {fcm_token}, create: {fcm_token, cities}, update: {fcm_token, cities}})
         console.log('user created successfuly')
-        return {status: 'set'}
+        return res.send({status: 'set'})
     });
 
     interface UnsetBody {
@@ -30,6 +30,6 @@ export default async function routes (app: FastifyInstance, options: object) {
         const fcm_token = req.body.fcm_token
         await prisma.user.delete({where: {fcm_token}})
         console.log('user removed successfuly')
-        return {status: 'unset'}
+        return res.send({status: 'unset'})
     });
 }
