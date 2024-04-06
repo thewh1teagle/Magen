@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:magen/ui/components/CustomChip.dart';
 import 'package:magen/ui/components/CustomSliverAppBar.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -31,6 +32,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
               [
                 Text("הגדרת ישובים"),
                 SizedBox(height: 10),
+                SearchBar(
+                  hintText: "חפש יישוב",
+                )
+              ],
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.0),
+            child: Column(
+              children: [
+                ActionChip(label: Text("ירושלים")),
+                CustomChip(label: Text("hi")),
               ],
             ),
           ),
