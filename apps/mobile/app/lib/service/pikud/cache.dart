@@ -1,7 +1,8 @@
 import 'dart:convert';
+
 import 'package:flutter/services.dart';
-import 'package:magen/pikud/city.dart';
-import 'package:magen/pikud/threat.dart';
+import 'package:magen/service/pikud/city.dart';
+import 'package:magen/service/pikud/threat.dart';
 
 class Threats {
   static final Threats _instance = Threats._internal();
@@ -53,13 +54,10 @@ class Cities {
 
     Map<String, City> cities = {};
 
-
     cities["כל הארץ"] = City(id: "0", he: "כל הארץ");
     citiesMap.forEach((key, value) {
       cities[key] = City.fromJSON(value);
     });
-
-    
 
     return cities;
   }

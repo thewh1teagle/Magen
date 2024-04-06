@@ -1,6 +1,6 @@
-import 'package:magen/pikud/cache.dart';
-import 'package:magen/pikud/city.dart';
-import 'package:magen/pikud/threat.dart';
+import 'package:magen/service/pikud/cache.dart';
+import 'package:magen/service/pikud/city.dart';
+import 'package:magen/service/pikud/threat.dart';
 
 class Alert {
   List<City> cities;
@@ -17,7 +17,8 @@ class Alert {
     var threats = await Threats().threats;
     var cities = await Cities().cities;
     var threat = threats[threatID] ?? Threat(he: "לא ידוע", en: "Uknown");
-    var activeCities = cities.values.where((city) => citiesIDS.contains(city.id)).toList();
+    var activeCities =
+        cities.values.where((city) => citiesIDS.contains(city.id)).toList();
     return Alert(cities: activeCities, threat: threat);
   }
 }
