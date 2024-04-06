@@ -1,2 +1,2 @@
 # m h  dom mon dow   command
-0 5  * * *  /root/orefmap/server/cron_job.sh
+0 5  * * *  /root/magen/server/cron_job.sh
