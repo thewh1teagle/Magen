@@ -24,7 +24,6 @@ class City {
   });
 
   static City fromJSON(Map<String, dynamic> json) {
-    print("json is $json");
     return City(
       id: json['id'].toString(),
       he: json['he'],

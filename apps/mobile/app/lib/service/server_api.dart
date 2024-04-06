@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class ServerAPI {
   late String baseURL;
@@ -32,6 +33,18 @@ class ServerAPI {
 
     if (response.statusCode != 200) {
       throw Exception('Failed to set data');
+    }
+  }
+
+  Future<void> test(String fcmToken) async {
+    final response = await http.post(
+      Uri.parse('$baseURL/api/user/test'),
+      body: jsonEncode({'fcm_token': fcmToken}),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to send test');
     }
   }
 
