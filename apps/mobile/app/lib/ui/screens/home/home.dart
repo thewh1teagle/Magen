@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:magen/service/firebase/firebase_api.dart';
-import 'package:magen/service/notification.dart';
 import 'package:magen/service/server_api.dart';
 import 'package:magen/ui/components/CustomSliverAppBar.dart';
 
@@ -13,31 +11,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future<void> _showNotificationWithActions() async {
-    var plugin = FlutterLocalNotificationsPlugin();
-    const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-      '...',
-      '...',
-      actions: <AndroidNotificationAction>[
-        AndroidNotificationAction('id_1', 'Action 1'),
-        AndroidNotificationAction('id_2', 'Action 2'),
-        AndroidNotificationAction('id_3', 'Action 3'),
-      ],
-    );
-    const NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-    await plugin.show(0, '...', '...', notificationDetails);
-  }
-
   @override
   void initState() {
-    Notifications().initNotifications();
     super.initState();
   }
 
   Future testAlert() async {
-    _showNotificationWithActions();
     var token = await FirebaseAPI().getToken();
     if (token != null) {
       ServerAPI().test(token);
