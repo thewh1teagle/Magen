@@ -3,3 +3,4 @@ build/
 .env
 target/
 *.pyc
+dist/
