@@ -17,13 +17,13 @@ services:
     entrypoint: /usr/local/bin/server -a "0.0.0.0" -p 3030 -m --interval 10s
     depends_on:
       - nginx
-    
+
     restart: unless-stopped
     stop_grace_period: 1s
     environment:
       - RUST_LOG=info
       - TZ=Asia/Jerusalem
-      
+
   nginx:
     container_name: nginx
     image: nginx:latest
@@ -36,7 +36,7 @@ services:
       - 443:443 # mapping port 443 to the container's port 443 for https
     volumes:
       - ./etc/nginx/templates:/etc/nginx/templates:ro
-      - ./etc/letsencrypt:/etc/letsencrypt:ro # mounting the folder to the nginx container 
+      - ./etc/letsencrypt:/etc/letsencrypt:ro # mounting the folder to the nginx container
       - ./certbot/data:/var/www/certbot
 
   certbot:
@@ -45,9 +45,9 @@ services:
     depends_on:
       - nginx
     command: >-
-             certonly --reinstall --webroot --webroot-path=/var/www/certbot
-             --email ${EMAIL} --agree-tos --no-eff-email
-             -d ${DOMAIN}
+      certonly --reinstall --webroot --webroot-path=/var/www/certbot
+      --email ${EMAIL} --agree-tos --no-eff-email
+      -d ${DOMAIN}
     volumes:
       - ./etc/letsencrypt:/etc/letsencrypt
       - ./certbot/data:/var/www/certbot

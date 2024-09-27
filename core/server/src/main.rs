@@ -1,8 +1,7 @@
 mod server;
+use clap::Parser;
 use ctrlc;
 use pretty_env_logger;
-use clap::Parser;
-
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -40,6 +39,10 @@ pub struct Args {
     /// Interval for quering new update.
     interval: humantime::Duration,
 
+    #[clap(long, default_value = "20s")]
+    /// Interval for quering new update.
+    timeout: humantime::Duration,
+
     #[clap(long, default_value = "/ws")]
     /// The ws path to bind to.
     ws_path: String,
@@ -49,8 +52,6 @@ pub struct Args {
 async fn main() {
     let args = Args::parse();
     pretty_env_logger::init();
-    ctrlc::set_handler(move || 
-        std::process::exit(0)
-    ).unwrap_or(());
+    ctrlc::set_handler(move || std::process::exit(0)).unwrap_or(());
     server::start(args).await;
 }

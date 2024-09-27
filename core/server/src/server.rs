@@ -1,71 +1,80 @@
 use crate::Args;
+use futures_util::{
+    stream::{SplitSink, SplitStream},
+    SinkExt, StreamExt, TryFutureExt,
+};
+use log::{debug, error};
+use once_cell::sync::Lazy;
 use pikud;
 use serde_json;
-use log::{debug, error};
-use tokio::{time::Duration, sync::{mpsc::{self, UnboundedSender}, Mutex, RwLock}};
-use tokio_stream::wrappers::UnboundedReceiverStream;
-use futures_util::{SinkExt, StreamExt, TryFutureExt, stream::{SplitSink, SplitStream}};
-use once_cell::sync::Lazy;
 use std::net::SocketAddr;
+use tokio::{
+    sync::{
+        mpsc::{self, UnboundedSender},
+        Mutex, RwLock,
+    },
+    time::Duration,
+};
+use tokio_stream::wrappers::UnboundedReceiverStream;
 use tower_http::trace::{DefaultMakeSpan, TraceLayer};
 //allows to extract the IP of connecting user
 use axum::extract::connect_info::ConnectInfo;
-use std::{collections::HashMap,sync::{
-    atomic::{AtomicUsize, Ordering},
-    Arc,
-}};
 use axum::{
     extract::ws::{Message, WebSocket, WebSocketUpgrade},
     response::IntoResponse,
     routing::get,
     Router,
 };
-
+use std::{
+    collections::HashMap,
+    sync::{
+        atomic::{AtomicUsize, Ordering},
+        Arc,
+    },
+};
 
 /// Our global unique user id counter.
 static NEXT_USER_ID: AtomicUsize = AtomicUsize::new(1);
 type Users = Arc<RwLock<HashMap<usize, mpsc::UnboundedSender<Message>>>>;
-static USERS: Lazy<Arc<tokio::sync::RwLock<HashMap<usize, UnboundedSender<axum::extract::ws::Message>>>>> = Lazy::new(|| {
-    Users::default()
-}); 
-static CLIENT: Lazy<Arc<tokio::sync::Mutex<pikud::Client>>> = Lazy::new(|| {
-    Arc::new(Mutex::new(pikud::Client::new()))
-}); 
+static USERS: Lazy<
+    Arc<tokio::sync::RwLock<HashMap<usize, UnboundedSender<axum::extract::ws::Message>>>>,
+> = Lazy::new(|| Users::default());
+static CLIENT: Lazy<Arc<tokio::sync::Mutex<pikud::Client>>> =
+    Lazy::new(|| Arc::new(Mutex::new(pikud::Client::new(Duration::from_secs(5)))));
 
 pub async fn start(args: Args) {
-    
-    if args.mock { // default to non mock
-        *CLIENT.lock().await = pikud::Client::new_mock();
+    if args.mock {
+        // default to non mock
+        *CLIENT.lock().await = pikud::Client::new_mock(*args.timeout);
+    } else {
+        *CLIENT.lock().await = pikud::Client::new(*args.timeout);
     }
     let app = Router::new()
-    .route(&args.ws_path, get(ws_handler))
-    // logging so we can see whats going on
-    .layer(
-        TraceLayer::new_for_http()
-            .make_span_with(DefaultMakeSpan::default().include_headers(true)),
-    );
+        .route(&args.ws_path, get(ws_handler))
+        // logging so we can see whats going on
+        .layer(
+            TraceLayer::new_for_http()
+                .make_span_with(DefaultMakeSpan::default().include_headers(true)),
+        );
 
     let listener = tokio::net::TcpListener::bind(format!("{}:{}", args.address, args.port))
         .await
         .unwrap();
 
-    tokio::spawn(
-        send_alerts_task(args.interval.into())
-    );
-    tokio::spawn(
-        keep_alive_task(args.ping_interval.into())
-    );
+    tokio::spawn(send_alerts_task(args.interval.into()));
+    tokio::spawn(keep_alive_task(args.ping_interval.into()));
 
-    axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>())
-        .await
-        .unwrap();
-    
+    axum::serve(
+        listener,
+        app.into_make_service_with_connect_info::<SocketAddr>(),
+    )
+    .await
+    .unwrap();
+
     // TODO: support secure wss
     // let default_cert_bytes = include_bytes!("../assets/default_cert.pem");
     // let default_key_bytes = include_bytes!("../assets/default_key.rsa");
-
 }
-
 
 async fn ws_handler(
     ws: WebSocketUpgrade,
@@ -76,7 +85,7 @@ async fn ws_handler(
     ws.on_upgrade(move |socket| on_user_connected(socket, addr))
 }
 
-async fn on_message_received(msg: &String, tx: UnboundedSender<Message>,) {
+async fn on_message_received(msg: &String, tx: UnboundedSender<Message>) {
     if let Ok(msg_data) = serde_json::from_str::<serde_json::Value>(&msg) {
         let maybe_action = msg_data.get("action").and_then(|a| a.as_str());
         if let Some(action) = maybe_action {
@@ -89,10 +98,10 @@ async fn on_message_received(msg: &String, tx: UnboundedSender<Message>,) {
                     match result {
                         Err(e) => {
                             error!("Error sending back test {}", e);
-                        },
+                        }
                         _ => {}
                     }
-                },
+                }
                 _ => {}
             }
         }
@@ -106,7 +115,7 @@ async fn on_user_connected(ws: WebSocket, addr: SocketAddr) {
 
     // Split the socket into a sender and receive of messages.
     let (user_ws_tx, user_ws_rx) = ws.split();
-    
+
     // Use an unbounded channel to handle buffering and flushing of messages
     // to the websocket...
     let (tx, rx) = mpsc::unbounded_channel();
@@ -126,8 +135,6 @@ async fn on_user_disconnected(my_id: usize) {
     USERS.write().await.remove(&my_id);
 }
 
-
-
 async fn notify_users(alert: pikud::Alert) {
     // send the actual alert to users
     let current_users = USERS.read().await;
@@ -140,21 +147,15 @@ async fn notify_users(alert: pikud::Alert) {
     }
 }
 
-async fn receiver_task(
-    my_id: usize,
-    mut rx: SplitStream<WebSocket>,
-    tx: UnboundedSender<Message>,
-) {
+async fn receiver_task(my_id: usize, mut rx: SplitStream<WebSocket>, tx: UnboundedSender<Message>) {
     // Receive message from user
     while let Some(result) = rx.next().await {
         match result {
-            Ok(msg) => {
-                match msg {
-                    Message::Text(msg) => {
-                        on_message_received(&msg, tx.clone()).await;
-                    },
-                    _ => {}
+            Ok(msg) => match msg {
+                Message::Text(msg) => {
+                    on_message_received(&msg, tx.clone()).await;
                 }
+                _ => {}
             },
             Err(e) => {
                 debug!("websocket error(uid={}): {}", my_id, e);
@@ -164,11 +165,13 @@ async fn receiver_task(
     }
 }
 
-async fn sender_task(mut rx: UnboundedReceiverStream<Message>, mut tx: SplitSink<WebSocket, Message>) {
+async fn sender_task(
+    mut rx: UnboundedReceiverStream<Message>,
+    mut tx: SplitSink<WebSocket, Message>,
+) {
     // send message to user
     while let Some(message) = rx.next().await {
-        tx
-            .send(message)
+        tx.send(message)
             .unwrap_or_else(|e| {
                 debug!("websocket send error: {}", e);
             })
@@ -190,9 +193,7 @@ async fn keep_alive_task(interval: Duration) {
     }
 }
 
-async fn send_alerts_task(
-    interval: Duration
-) -> Result<(), Box<dyn std::error::Error + Send>> {
+async fn send_alerts_task(interval: Duration) -> Result<(), Box<dyn std::error::Error + Send>> {
     // Send pikud alert to users when there's
     loop {
         let mut client = CLIENT.lock().await;
