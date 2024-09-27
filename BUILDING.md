@@ -15,3 +15,15 @@ docker compose down
 docker pull thewh1teagle/magen-srv
 docker compose up -d
 ```
+
+Logs
+
+```console
+docker compose logs -t ws --follow
+```
+
+Clear Logs
+
+```console
+truncate -s 0 /var/lib/docker/containers/**/*-json.log
+```
