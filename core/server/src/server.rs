@@ -38,13 +38,20 @@ struct User {
     host: String,
     #[allow(unused)]
     port: String,
+    user_agent: Option<String>,
 }
 
 impl User {
     pub fn display(&self) -> String {
+        let user_agent_display = if let Some(agent) = &self.user_agent {
+            format!(", user_agent: {}", agent)
+        } else {
+            String::new()
+        };
+
         format!(
-            "User {{ channel: mpsc channel, host: {}, port: {} }}",
-            self.host, self.port
+            "User {{ channel: mpsc channel, host: {}, port: {}{} }}",
+            self.host, self.port, user_agent_display
         )
     }
 }
@@ -143,6 +150,10 @@ async fn on_user_connected(ws: WebSocket, addr: SocketAddr, headers: HeaderMap) 
         .and_then(|value| value.to_str().ok())
         .unwrap_or(&addr_ip)
         .to_string();
+    let user_agent = headers
+        .get("User-Agent")
+        .and_then(|u| u.to_str().ok().map(|s| s.to_string()));
+
     let port = addr.port().to_string();
 
     // Save the sender in our list of connected USERS.
@@ -150,6 +161,7 @@ async fn on_user_connected(ws: WebSocket, addr: SocketAddr, headers: HeaderMap) 
         channel: tx.clone(),
         host,
         port,
+        user_agent,
     };
     tracing::debug!("New connection from {}", user.display());
     USERS.write().await.insert(my_id, user.clone());
