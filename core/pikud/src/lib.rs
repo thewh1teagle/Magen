@@ -1,6 +1,4 @@
-use log::debug;
-use serde::ser::SerializeStruct;
-use serde::{Deserialize, Serialize, Serializer};
+use serde::{ser::SerializeStruct, Deserialize, Serialize, Serializer};
 use serde_json::Value;
 use std::time::Duration;
 use uuid::Uuid;
@@ -65,12 +63,12 @@ impl Client {
         &mut self,
         json_str: &str,
     ) -> Result<Option<Alert>, Box<dyn std::error::Error + Send + Sync>> {
-        debug!("parsing response => {}", json_str);
+        tracing::debug!("parsing response => {}", json_str);
         if let Ok(json_data) = serde_json::from_str::<Value>(&json_str) {
             let id = json_data.get("id").and_then(|id| id.as_str());
             let category = json_data.get("cat").and_then(|cat| cat.as_str());
             let data = json_data.get("data").and_then(|arr| arr.as_array());
-            debug!(
+            tracing::debug!(
                 "id: {} category: {} data {:?}, current {}",
                 id.unwrap_or(""),
                 category.unwrap_or(""),
@@ -85,9 +83,9 @@ impl Client {
                         .iter()
                         .map(|c| c.as_str().unwrap_or_default().to_string())
                         .collect();
-                    debug!("cities: {:?}", cities);
+                    tracing::debug!("cities: {:?}", cities);
                     if id != self.alert_id {
-                        debug!("sending");
+                        tracing::debug!("sending");
                         self.alert_id = id.to_owned();
                         return Ok(Some(Alert {
                             id,
@@ -96,14 +94,14 @@ impl Client {
                             is_test: None,
                         }));
                     } else {
-                        debug!("alert_id equals to id");
+                        tracing::debug!("alert_id equals to id");
                         return Ok(None);
                     }
                 }
                 _ => return Err("cant extract data".into()),
             }
         } else {
-            debug!("cant parse");
+            tracing::debug!("cant parse");
             return Ok(None);
         }
     }
@@ -134,7 +132,7 @@ impl Client {
             return Ok(Some(alert));
         }
         let client = reqwest::Client::builder().timeout(self.timeout).build()?;
-        debug!("sending request");
+        tracing::debug!("sending request");
         let json_str: String = client
             .get("https://www.oref.org.il/WarningMessages/Alert/alerts.json")
             .header("X-Requested-With", "XMLHttpRequest")
@@ -143,7 +141,7 @@ impl Client {
             .await?
             .text()
             .await?;
-        debug!("request finished");
+        tracing::debug!("request finished");
 
         if json_str.contains("Access Denied") {
             return Err("You cannot access the pikudhaoref API from outside Israel.".into());

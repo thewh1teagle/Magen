@@ -1,7 +1,7 @@
 mod server;
 use clap::Parser;
 use ctrlc;
-use pretty_env_logger;
+use tracing_subscriber::EnvFilter;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -51,7 +51,9 @@ pub struct Args {
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
-    pretty_env_logger::init();
+    tracing_subscriber::fmt()
+        .with_env_filter(EnvFilter::from_default_env())
+        .init();
     ctrlc::set_handler(move || std::process::exit(0)).unwrap_or(());
     server::start(args).await;
 }

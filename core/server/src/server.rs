@@ -3,7 +3,6 @@ use futures_util::{
     stream::{SplitSink, SplitStream},
     SinkExt, StreamExt, TryFutureExt,
 };
-use log::{debug, error};
 use once_cell::sync::Lazy;
 use pikud;
 use serde_json;
@@ -97,7 +96,7 @@ async fn on_message_received(msg: &String, tx: UnboundedSender<Message>) {
                     let result = tx.send(Message::Text(mock_alert.to_string()));
                     match result {
                         Err(e) => {
-                            error!("Error sending back test {}", e);
+                            tracing::error!("Error sending back test {}", e);
                         }
                         _ => {}
                     }
@@ -109,7 +108,7 @@ async fn on_message_received(msg: &String, tx: UnboundedSender<Message>) {
 }
 
 async fn on_user_connected(ws: WebSocket, addr: SocketAddr) {
-    debug!("New connection from {addr}");
+    tracing::debug!("New connection from {addr}");
     // Use a counter to assign a new unique ID for this user.
     let my_id = NEXT_USER_ID.fetch_add(1, Ordering::Relaxed);
 
@@ -138,7 +137,7 @@ async fn on_user_disconnected(my_id: usize) {
 async fn notify_users(alert: pikud::Alert) {
     // send the actual alert to users
     let current_users = USERS.read().await;
-    debug!("sending alert to {} clients", current_users.len());
+    tracing::debug!("sending alert to {} clients", current_users.len());
     for (&_uid, tx) in current_users.iter() {
         if let Err(_disconnected) = tx.send(Message::Text(alert.to_string())) {
             // The tx is disconnected, our `user_disconnected` code
@@ -158,7 +157,7 @@ async fn receiver_task(my_id: usize, mut rx: SplitStream<WebSocket>, tx: Unbound
                 _ => {}
             },
             Err(e) => {
-                debug!("websocket error(uid={}): {}", my_id, e);
+                tracing::debug!("websocket error(uid={}): {}", my_id, e);
                 break;
             }
         };
@@ -173,7 +172,7 @@ async fn sender_task(
     while let Some(message) = rx.next().await {
         tx.send(message)
             .unwrap_or_else(|e| {
-                debug!("websocket send error: {}", e);
+                tracing::debug!("websocket send error: {}", e);
             })
             .await;
     }
@@ -207,7 +206,7 @@ async fn send_alerts_task(interval: Duration) -> Result<(), Box<dyn std::error::
             }
             Err(err) => {
                 // Handle the error by printing it to stderr
-                error!("Error while getting an alert: {}", err);
+                tracing::error!("Error while getting an alert: {}", err);
             }
         }
         tokio::time::sleep(interval).await;
