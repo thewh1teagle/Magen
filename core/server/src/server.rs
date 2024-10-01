@@ -32,13 +32,16 @@ use std::{
     },
 };
 
-/// Our global unique user id counter.
+#[derive(Clone)]
+struct User {
+    channel: mpsc::UnboundedSender<Message>,
+    addr: SocketAddr,
+}
+
 static NEXT_USER_ID: AtomicUsize = AtomicUsize::new(1);
-type Users = Arc<RwLock<HashMap<usize, mpsc::UnboundedSender<Message>>>>;
-static USERS: Lazy<
-    Arc<tokio::sync::RwLock<HashMap<usize, UnboundedSender<axum::extract::ws::Message>>>>,
-> = Lazy::new(|| Users::default());
-static CLIENT: Lazy<Arc<tokio::sync::Mutex<pikud::Client>>> =
+static USERS: Lazy<Arc<RwLock<HashMap<usize, User>>>> =
+    Lazy::new(|| Arc::new(RwLock::new(HashMap::new())));
+static CLIENT: Lazy<Arc<Mutex<pikud::Client>>> =
     Lazy::new(|| Arc::new(Mutex::new(pikud::Client::new(Duration::from_secs(5)))));
 
 pub async fn start(args: Args) {
@@ -84,7 +87,7 @@ async fn ws_handler(
     ws.on_upgrade(move |socket| on_user_connected(socket, addr))
 }
 
-async fn on_message_received(msg: &String, tx: UnboundedSender<Message>) {
+async fn on_message_received(msg: &String, tx: UnboundedSender<Message>, user: &User) {
     if let Ok(msg_data) = serde_json::from_str::<serde_json::Value>(&msg) {
         let maybe_action = msg_data.get("action").and_then(|a| a.as_str());
         if let Some(action) = maybe_action {
@@ -93,10 +96,12 @@ async fn on_message_received(msg: &String, tx: UnboundedSender<Message>) {
                     let client = CLIENT.lock().await;
                     let mock_alert = client.get_mock_alert();
                     drop(client); // release lock as soon as possible
+
+                    tracing::debug!("Sending test message to {:?}", user.addr.ip());
                     let result = tx.send(Message::Text(mock_alert.to_string()));
                     match result {
                         Err(e) => {
-                            tracing::error!("Error sending back test {}", e);
+                            tracing::error!("Error sending back test {} to {}", e, user.addr.ip());
                         }
                         _ => {}
                     }
@@ -121,10 +126,14 @@ async fn on_user_connected(ws: WebSocket, addr: SocketAddr) {
     let rx = UnboundedReceiverStream::new(rx);
 
     // Save the sender in our list of connected USERS.
-    USERS.write().await.insert(my_id, tx.clone());
+    let user = User {
+        channel: tx.clone(),
+        addr,
+    };
+    USERS.write().await.insert(my_id, user.clone());
 
     tokio::task::spawn(sender_task(rx, user_ws_tx));
-    receiver_task(my_id, user_ws_rx, tx).await;
+    receiver_task(my_id, user_ws_rx, tx, user).await;
     // disconnect when receiver stopping
     on_user_disconnected(my_id).await;
 }
@@ -138,21 +147,27 @@ async fn notify_users(alert: pikud::Alert) {
     // send the actual alert to users
     let current_users = USERS.read().await;
     tracing::debug!("sending alert to {} clients", current_users.len());
-    for (&_uid, tx) in current_users.iter() {
-        if let Err(_disconnected) = tx.send(Message::Text(alert.to_string())) {
+    for (&_uid, user) in current_users.iter() {
+        tracing::trace!("sending alert to {}", user.addr.ip());
+        if let Err(_disconnected) = user.channel.send(Message::Text(alert.to_string())) {
             // The tx is disconnected, our `user_disconnected` code
             // should be happening in another task, nothing more to do here.
         }
     }
 }
 
-async fn receiver_task(my_id: usize, mut rx: SplitStream<WebSocket>, tx: UnboundedSender<Message>) {
+async fn receiver_task(
+    my_id: usize,
+    mut rx: SplitStream<WebSocket>,
+    tx: UnboundedSender<Message>,
+    user: User,
+) {
     // Receive message from user
     while let Some(result) = rx.next().await {
         match result {
             Ok(msg) => match msg {
                 Message::Text(msg) => {
-                    on_message_received(&msg, tx.clone()).await;
+                    on_message_received(&msg, tx.clone(), &user).await;
                 }
                 _ => {}
             },
@@ -181,8 +196,8 @@ async fn sender_task(
 async fn keep_alive_task(interval: Duration) {
     // keep users alive with pings
     loop {
-        for (&_uid, tx) in USERS.read().await.iter() {
-            if let Err(_disconnected) = tx.send(Message::Ping(vec![])) {
+        for (&_uid, user) in USERS.read().await.iter() {
+            if let Err(_disconnected) = user.channel.send(Message::Ping(vec![])) {
                 // The tx is disconnected, our `user_disconnected` code
                 // should be happening in another task, nothing more to do here.
             }
