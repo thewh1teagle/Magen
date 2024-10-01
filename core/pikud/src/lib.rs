@@ -63,7 +63,7 @@ impl Client {
         &mut self,
         json_str: &str,
     ) -> Result<Option<Alert>, Box<dyn std::error::Error + Send + Sync>> {
-        tracing::debug!("parsing response => {}", json_str);
+        tracing::trace!("parsing response => {}", json_str);
         if let Ok(json_data) = serde_json::from_str::<Value>(&json_str) {
             let id = json_data.get("id").and_then(|id| id.as_str());
             let category = json_data.get("cat").and_then(|cat| cat.as_str());
@@ -101,7 +101,7 @@ impl Client {
                 _ => return Err("cant extract data".into()),
             }
         } else {
-            tracing::debug!("cant parse");
+            tracing::trace!("cant parse");
             return Ok(None);
         }
     }
@@ -132,7 +132,7 @@ impl Client {
             return Ok(Some(alert));
         }
         let client = reqwest::Client::builder().timeout(self.timeout).build()?;
-        tracing::debug!("sending request");
+        tracing::trace!("sending request");
         let json_str: String = client
             .get("https://www.oref.org.il/WarningMessages/Alert/alerts.json")
             .header("X-Requested-With", "XMLHttpRequest")
@@ -141,7 +141,6 @@ impl Client {
             .await?
             .text()
             .await?;
-        tracing::debug!("request finished");
 
         if json_str.contains("Access Denied") {
             return Err("You cannot access the pikudhaoref API from outside Israel.".into());
