@@ -28,3 +28,16 @@ Clear Logs
 ```console
 truncate -s 0 /var/lib/docker/containers/**/*-json.log
 ```
+
+Manual test
+
+```console
+npm install -g wscat
+wscat -c wss://oref-rs.duckdns.org/ws
+```
+
+Then paste
+
+```json
+{ "action": "test" }
+```

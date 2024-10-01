@@ -4,3 +4,4 @@ build/
 target/
 *.pyc
 dist/
+websocat
