@@ -40,6 +40,15 @@ struct User {
     port: String,
 }
 
+impl User {
+    pub fn display(&self) -> String {
+        format!(
+            "User {{ channel: mpsc channel, host: {}, port: {} }}",
+            self.host, self.port
+        )
+    }
+}
+
 static NEXT_USER_ID: AtomicUsize = AtomicUsize::new(1);
 static USERS: Lazy<Arc<RwLock<HashMap<usize, User>>>> =
     Lazy::new(|| Arc::new(RwLock::new(HashMap::new())));
@@ -142,7 +151,7 @@ async fn on_user_connected(ws: WebSocket, addr: SocketAddr, headers: HeaderMap) 
         host,
         port,
     };
-    tracing::debug!("New connection from {user:?}");
+    tracing::debug!("New connection from {}", user.display());
     USERS.write().await.insert(my_id, user.clone());
 
     tokio::task::spawn(sender_task(rx, user_ws_tx));
