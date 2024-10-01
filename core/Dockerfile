@@ -1,25 +1,13 @@
-FROM lukemathwalker/cargo-chef:latest-rust-1 AS chef
-
-WORKDIR /app/
-
-FROM chef AS planner
+FROM rust:1.81.0 AS builder
+WORKDIR /src
 COPY . .
-RUN cargo chef prepare --recipe-path recipe.json
-
-FROM chef AS builder 
-# Build dependencies - this is the caching Docker layer!
-
-COPY --from=planner /app/recipe.json recipe.json
-RUN cargo chef cook --release --recipe-path recipe.json
-# Build application
-COPY . .
-RUN cargo build --release -p server
+RUN cargo build --release
 
 # We do not need the Rust toolchain to run the binary!
 FROM debian:bookworm-slim AS runtime
 RUN apt-get update -y
 RUN apt-get install ca-certificates -y
-WORKDIR /app/
-COPY --from=builder /app/target/release/server /usr/local/bin
+WORKDIR /app
+COPY --from=builder /src/target/release/server /app/server
 EXPOSE 3030
-ENTRYPOINT ["/usr/local/bin/server"]
+ENTRYPOINT ["/app/server"]

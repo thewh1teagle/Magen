@@ -4,8 +4,9 @@ Prepare
 
 ```console
 cd core
-docker buildx build --platform=linux/amd64 -t thewh1teagle/magen-srv .
-docker push thewh1teagle/magen-srv
+docker buildx build --platform=linux/amd64 --progress=plain -t thewh1teagle/magen-srv .
+docker tag thewh1teagle/magen-srv thewh1teagle/magen-srv:latest
+docker push thewh1teagle/magen-srv:latest
 ```
 
 Deploy
