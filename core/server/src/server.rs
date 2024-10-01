@@ -180,7 +180,11 @@ async fn on_user_disconnected(my_id: usize) {
 async fn notify_users(alert: pikud::Alert) {
     // send the actual alert to users
     let current_users = USERS.read().await;
-    tracing::debug!("sending alert to {} clients", current_users.len());
+    tracing::debug!(
+        "sending alert {:?} to {} clients",
+        alert,
+        current_users.len()
+    );
     for (&_uid, user) in current_users.iter() {
         tracing::trace!("sending alert to {}", user.host);
         if let Err(_disconnected) = user.channel.send(Message::Text(alert.to_string())) {
