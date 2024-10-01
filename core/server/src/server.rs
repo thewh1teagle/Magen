@@ -17,7 +17,7 @@ use tokio::{
 use tokio_stream::wrappers::UnboundedReceiverStream;
 use tower_http::trace::{DefaultMakeSpan, TraceLayer};
 //allows to extract the IP of connecting user
-use axum::extract::connect_info::ConnectInfo;
+use axum::{extract::connect_info::ConnectInfo, http::HeaderMap};
 use axum::{
     extract::ws::{Message, WebSocket, WebSocketUpgrade},
     response::IntoResponse,
@@ -32,10 +32,12 @@ use std::{
     },
 };
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 struct User {
     channel: mpsc::UnboundedSender<Message>,
-    addr: SocketAddr,
+    host: String,
+    #[allow(unused)]
+    port: String,
 }
 
 static NEXT_USER_ID: AtomicUsize = AtomicUsize::new(1);
@@ -81,10 +83,11 @@ pub async fn start(args: Args) {
 async fn ws_handler(
     ws: WebSocketUpgrade,
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
+    headers: HeaderMap,
 ) -> impl IntoResponse {
     // finalize the upgrade process by returning upgrade callback.
     // we can customize the callback by sending additional info such as address.
-    ws.on_upgrade(move |socket| on_user_connected(socket, addr))
+    ws.on_upgrade(move |socket| on_user_connected(socket, addr, headers))
 }
 
 async fn on_message_received(msg: &String, tx: UnboundedSender<Message>, user: &User) {
@@ -97,11 +100,11 @@ async fn on_message_received(msg: &String, tx: UnboundedSender<Message>, user: &
                     let mock_alert = client.get_mock_alert();
                     drop(client); // release lock as soon as possible
 
-                    tracing::debug!("Sending test message to {:?}", user.addr.ip());
+                    tracing::debug!("Sending test message to {:?}", user.host);
                     let result = tx.send(Message::Text(mock_alert.to_string()));
                     match result {
                         Err(e) => {
-                            tracing::error!("Error sending back test {} to {}", e, user.addr.ip());
+                            tracing::error!("Error sending back test {} to {}", e, user.host);
                         }
                         _ => {}
                     }
@@ -112,8 +115,7 @@ async fn on_message_received(msg: &String, tx: UnboundedSender<Message>, user: &
     }
 }
 
-async fn on_user_connected(ws: WebSocket, addr: SocketAddr) {
-    tracing::debug!("New connection from {addr}");
+async fn on_user_connected(ws: WebSocket, addr: SocketAddr, headers: HeaderMap) {
     // Use a counter to assign a new unique ID for this user.
     let my_id = NEXT_USER_ID.fetch_add(1, Ordering::Relaxed);
 
@@ -125,11 +127,22 @@ async fn on_user_connected(ws: WebSocket, addr: SocketAddr) {
     let (tx, rx) = mpsc::unbounded_channel();
     let rx = UnboundedReceiverStream::new(rx);
 
+    let addr_ip = addr.ip();
+    let addr_ip = addr_ip.to_string();
+    let host = headers
+        .get("X-Real-IP")
+        .and_then(|value| value.to_str().ok())
+        .unwrap_or(&addr_ip)
+        .to_string();
+    let port = addr.port().to_string();
+
     // Save the sender in our list of connected USERS.
     let user = User {
         channel: tx.clone(),
-        addr,
+        host,
+        port,
     };
+    tracing::debug!("New connection from {user:?}");
     USERS.write().await.insert(my_id, user.clone());
 
     tokio::task::spawn(sender_task(rx, user_ws_tx));
@@ -148,7 +161,7 @@ async fn notify_users(alert: pikud::Alert) {
     let current_users = USERS.read().await;
     tracing::debug!("sending alert to {} clients", current_users.len());
     for (&_uid, user) in current_users.iter() {
-        tracing::trace!("sending alert to {}", user.addr.ip());
+        tracing::trace!("sending alert to {}", user.host);
         if let Err(_disconnected) = user.channel.send(Message::Text(alert.to_string())) {
             // The tx is disconnected, our `user_disconnected` code
             // should be happening in another task, nothing more to do here.
