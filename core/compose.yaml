@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     stop_grace_period: 1s
     environment:
-      - RUST_LOG=DEBUG
+      - RUST_LOG=pikud=DEBUG,server=DEBUG
       - TZ=Asia/Jerusalem
 
   ws_mock:
@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
     stop_grace_period: 1s
     environment:
-      - RUST_LOG=DEBUG
+      - RUST_LOG=pikud=DEBUG,server=DEBUG
       - TZ=Asia/Jerusalem
 
   nginx:
