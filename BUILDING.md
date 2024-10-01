@@ -12,9 +12,9 @@ docker push thewh1teagle/magen-srv:latest
 Deploy
 
 ```console
-docker compose down
+docker compose down ws
 docker pull thewh1teagle/magen-srv
-docker compose up -d
+docker compose up ws -d
 ```
 
 Logs
