@@ -1,12 +1,12 @@
-import StaticMaps, { StaticMapsOptions } from "staticmaps";
-import { citiesJson, polygonsJson } from "../../magen-common/src/lib";
+import fs from "fs";
+import Jimp from "jimp";
 import path from "path";
+import StaticMaps, { StaticMapsOptions } from "staticmaps";
 import { ActiveAlert } from "../../magen-common/src/interfaces";
-import Jimp from 'jimp'
-import fs from 'fs'
+import { citiesJson, polygonsJson } from "../../magen-common/src/lib";
 
 function getAssetPath(asset: string): string {
-  return path.resolve(path.dirname(__filename), `assets/${asset}`)
+  return path.resolve(path.dirname(__filename), `assets/${asset}`);
 }
 
 function reverseCoordinates(coordinates: any[]): any[] {
@@ -20,53 +20,54 @@ function reverseCoordinates(coordinates: any[]): any[] {
   return coordinates;
 }
 
-
-function getBoundingBox(alerts: ActiveAlert[]): [number, number, number, number] {
-    if (alerts.length === 0) {
-      throw new Error('No alerts provided');
-    }
-  
-    let minLat = alerts[0].city!.lat;
-    let maxLat = alerts[0].city!.lat;
-    let minLng = alerts[0].city!.lng;
-    let maxLng = alerts[0].city!.lng;
-  
-    for (const alert of alerts) {
-      const lat = alert.city!.lat;
-      const lng = alert.city!.lng;
-  
-      if (lat < minLat) {
-        minLat = lat;
-      } else if (lat > maxLat) {
-        maxLat = lat;
-      }
-  
-      if (lng < minLng) {
-        minLng = lng;
-      } else if (lng > maxLng) {
-        maxLng = lng;
-      }
-    }
-  
-    // Convert to [minLng, maxLng, minLat, maxLat] format
-    return [minLng, maxLng, minLat, maxLat];
+function getBoundingBox(
+  alerts: ActiveAlert[]
+): [number, number, number, number] {
+  if (alerts.length === 0) {
+    throw new Error("No alerts provided");
   }
+
+  let minLat = alerts[0].city!.lat;
+  let maxLat = alerts[0].city!.lat;
+  let minLng = alerts[0].city!.lng;
+  let maxLng = alerts[0].city!.lng;
+
+  for (const alert of alerts) {
+    const lat = alert.city!.lat;
+    const lng = alert.city!.lng;
+
+    if (lat < minLat) {
+      minLat = lat;
+    } else if (lat > maxLat) {
+      maxLat = lat;
+    }
+
+    if (lng < minLng) {
+      minLng = lng;
+    } else if (lng > maxLng) {
+      maxLng = lng;
+    }
+  }
+
+  // Convert to [minLng, maxLng, minLat, maxLat] format
+  return [minLng, maxLng, minLat, maxLat];
+}
 
 function calculateZoomLevel(boundaries: any, mapWidth: any, mapHeight: any) {
-    const latDiff = boundaries.maxLat - boundaries.minLat;
-    const lngDiff = boundaries.maxLng - boundaries.minLng;
-    
-    const latZoom = Math.log(360 / latDiff) / Math.LN2;
-    const lngZoom = Math.log(360 / lngDiff) / Math.LN2;
-    
-    const zoom = Math.min(latZoom, lngZoom);
-  
-    // Adjust the zoom based on the map dimensions
-    const mapDim = Math.max(mapWidth, mapHeight);
-    const adjustedZoom = zoom - Math.log(mapDim / 256) / Math.LN2;
-    
-    return adjustedZoom;
-  }
+  const latDiff = boundaries.maxLat - boundaries.minLat;
+  const lngDiff = boundaries.maxLng - boundaries.minLng;
+
+  const latZoom = Math.log(360 / latDiff) / Math.LN2;
+  const lngZoom = Math.log(360 / lngDiff) / Math.LN2;
+
+  const zoom = Math.min(latZoom, lngZoom);
+
+  // Adjust the zoom based on the map dimensions
+  const mapDim = Math.max(mapWidth, mapHeight);
+  const adjustedZoom = zoom - Math.log(mapDim / 256) / Math.LN2;
+
+  return adjustedZoom;
+}
 
 async function renderAlerts(alerts: ActiveAlert[]) {
   const options: StaticMapsOptions = {
@@ -76,22 +77,22 @@ async function renderAlerts(alerts: ActiveAlert[]) {
     tileUrl: "https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=he",
     zoomRange: {
       max: 11,
-      min: 7
-    }
+      min: 7,
+    },
   };
 
-
   let map: StaticMaps | null = new StaticMaps(options);
-  
 
-  const cities = alerts.filter(a => a.city?.lng !== undefined).map((a) => {
-    let polygon = polygonsJson?.[a.city!.id].slice()
-    polygon = reverseCoordinates(polygon)
-    return {
-      coord: [a.city!.lng, a.city!.lat],
-      polygon,  
-    }
-  });
+  const cities = alerts
+    .filter((a) => a.city?.lng !== undefined)
+    .map((a) => {
+      let polygon = polygonsJson?.[a.city!.id].slice();
+      polygon = reverseCoordinates(polygon);
+      return {
+        coord: [a.city!.lng, a.city!.lat],
+        polygon,
+      };
+    });
 
   const markerPath = getAssetPath("marker.svg");
 
@@ -118,36 +119,33 @@ async function renderAlerts(alerts: ActiveAlert[]) {
     });
   }
   // const boundaries = findBoundaries(alerts);
-//   const zoom = calculateZoomLevel(boundaries, 700, 700)
-  
+  //   const zoom = calculateZoomLevel(boundaries, 700, 700)
+
   const center = getBoundingBox(alerts);
-  
+
   await map.render(center);
-  const buffer = map.image.image.buffer.slice(0)
-  return buffer
+  const buffer = map.image.image.buffer.slice(0);
+  return buffer;
 }
 
-
-
 async function JimpRead(path: string | any): Promise<Jimp> {
-    return new Promise<Jimp>((resolve, reject) => {
-      Jimp.read(path, (err, value) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(value);
-      });
+  return new Promise<Jimp>((resolve, reject) => {
+    Jimp.read(path, (err, value) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(value);
     });
-  }
-
+  });
+}
 
 export async function getAlertsImage(alerts: ActiveAlert[]) {
-  const filtered = alerts.filter(a => a.city?.lng !== undefined)
+  const filtered = alerts.filter((a) => a.city?.lng !== undefined);
   const image = await renderAlerts(filtered);
-  const helloImage = await JimpRead(image)
-  
-  const logo = await JimpRead(getAssetPath('logo.png'))
-  const google = await JimpRead(getAssetPath('google.png'))
+  const helloImage = await JimpRead(image);
+
+  const logo = await JimpRead(getAssetPath("logo.png"));
+  const google = await JimpRead(getAssetPath("google.png"));
   const margin = 10; // Adjust this as needed
   const x = margin;
   const y = margin;
@@ -177,12 +175,12 @@ async function main() {
       threat: [] as any,
     },
     {
-        is_test: true,
-        name: "",
-        timestamp: new Date(),
-        city: citiesJson?.["אזור תעשייה צפוני אשקלון"],
-        threat: [] as any
-    }
+      is_test: true,
+      name: "",
+      timestamp: new Date(),
+      city: citiesJson?.["אזור תעשייה צפוני אשקלון"],
+      threat: [] as any,
+    },
   ];
   const alerts1: ActiveAlert[] = [
     {
@@ -193,19 +191,19 @@ async function main() {
       threat: [] as any,
     },
     {
-        is_test: true,
-        name: "",
-        timestamp: new Date(),
-        city: citiesJson?.["אזור תעשייה צפוני אשקלון"],
-        threat: [] as any
-    }
+      is_test: true,
+      name: "",
+      timestamp: new Date(),
+      city: citiesJson?.["אזור תעשייה צפוני אשקלון"],
+      threat: [] as any,
+    },
   ];
-  const image = await getAlertsImage(alerts)
-  fs.writeFileSync('test.png', image)
-  await new Promise(resolve => setTimeout(resolve, 5000))
+  const image = await getAlertsImage(alerts);
+  fs.writeFileSync("test.png", image);
+  await new Promise((resolve) => setTimeout(resolve, 5000));
   // await getAlertsImage(alerts1)
-  const image1 = await getAlertsImage(alerts1)
-  fs.writeFileSync('test.png', image1)
+  const image1 = await getAlertsImage(alerts1);
+  fs.writeFileSync("test.png", image1);
 }
 
 // main();

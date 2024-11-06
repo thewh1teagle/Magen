@@ -2,36 +2,37 @@ import WebSocket from "ws";
 import { OrefUpdate } from "../../packages/magen-common/src/interfaces";
 import { sendAlerts } from "./bot";
 import * as config from "./config";
-import { getAlerts, logger } from "./utils";
 import { EventQueue } from "./EventQueue";
+import log from "./log";
+import { getAlerts } from "./utils";
 
-const queue = new EventQueue(sendAlerts)
+const queue = new EventQueue(sendAlerts);
 
 function connect() {
-  logger.info('WS connecting')
-    let conn = new WebSocket(config.wsURL, {
-        perMessageDeflate: false,
-    });
-    logger.info('WS connected')
-    return conn
+  log.info("WS connecting");
+  let conn = new WebSocket(config.wsURL, {
+    perMessageDeflate: false,
+  });
+  log.info("WS connected");
+  return conn;
 }
 
 async function onMessage(message: WebSocket.MessageEvent) {
-  logger.debug(message.data)
+  log.debug(message.data);
   const update = JSON.parse(message.data.toString()) as OrefUpdate;
-  const alerts = getAlerts(update)
-  queue.enqueue(alerts)
+  const alerts = getAlerts(update);
+  queue.enqueue(alerts);
 }
 
 async function main() {
-  logger.info("Running")
-  let socket = connect()
+  log.info("Running");
+  let socket = connect();
   socket.addEventListener("message", onMessage);
-  socket.addEventListener('close', () => {
-      setTimeout(() => {
-          logger.info('WS disconnected')
-          socket = connect() // reconnect
-      }, 2000)
-  })
+  socket.addEventListener("close", () => {
+    setTimeout(() => {
+      log.info("WS disconnected");
+      socket = connect(); // reconnect
+    }, 2000);
+  });
 }
-main()
+main();

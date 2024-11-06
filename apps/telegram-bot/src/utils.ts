@@ -1,13 +1,8 @@
-import pino from "pino";
 import {
   ActiveAlert,
   OrefUpdate,
 } from "../../packages/magen-common/src/interfaces";
-import {
-  citiesJson,
-  threatsJson,
-} from "../../packages/magen-common/src/lib";
-import * as config from "./config";
+import { citiesJson, threatsJson } from "../../packages/magen-common/src/lib";
 
 export function getAlerts(update: OrefUpdate): ActiveAlert[] {
   const alerts: ActiveAlert[] = [];
@@ -22,14 +17,3 @@ export function getAlerts(update: OrefUpdate): ActiveAlert[] {
   }
   return alerts;
 }
-
-export const logger = pino({
-  name: config.appName,
-  level: config.logLevel,
-  transport: {
-    target: "pino-pretty",
-    options: {
-      colorize: true,
-    },
-  },
-});

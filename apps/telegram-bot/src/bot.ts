@@ -2,9 +2,10 @@ import { format } from "date-fns";
 import { Bot, InputFile } from "grammy";
 import { Area } from "../../packages/magen-common/src/interfaces";
 import { areasJson, citiesJson } from "../../packages/magen-common/src/lib";
-import * as config from "./config";
-import { ActiveAlert } from "./src/interfaces";
 import { getAlertsImage } from "../../packages/static-map/src/lib";
+import * as config from "./config";
+import log from "./log";
+import { ActiveAlert } from "./src/interfaces";
 
 const bot = new Bot(config.botToken!);
 
@@ -43,6 +44,11 @@ function createMessage(alerts: ActiveAlert[]): string {
 }
 
 export async function sendAlerts(alerts: ActiveAlert[]) {
+  log.info(
+    `Sending ${alerts.length} alerts: ${alerts
+      .map((a) => a?.city?.he)
+      .join(",")}`
+  );
   await bot.api.sendMessage(config.channelID, createMessage(alerts), {
     parse_mode: "Markdown",
     disable_web_page_preview: true,

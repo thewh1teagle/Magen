@@ -7,5 +7,7 @@ services:
       dockerfile: telegram_bot/Dockerfile
     env_file:
       - .env
+    environment:
+      - LOG_LEVEL=DEBUG
     network_mode: "host"
     restart: unless-stopped
